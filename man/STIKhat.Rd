@@ -26,7 +26,7 @@ an estimate of the space-time intensity.}
 \item{correction}{logical value. If \code{TRUE}, the Ripley's
 edge correction is used.} \item{infectious}{logical value. If
 \code{TRUE}, only future events
-  are considered. The estimate of the STIK function is thus the one given in Details.}
+  are considered. See Details.}
  }
 
 \details{Gabriel and Diggle (2009) propose the following
@@ -61,6 +61,13 @@ T|}{n_v(n-1)} \sum_{i=1}^{n_v}
   \right\rbrace}}{K'(u,v) = |SxT|/(nv(n-1)) sum_{i=1,...,nv} sum_{j=1,...,nv; j>i} 1/wij 1{uij <=
   u} 1{tj - ti <= v}}
 
+If parameter \code{infectious = TRUE}, both future and past
+events are considered and the estimator is: \deqn{
+  \widehat K^*_{ST}(u,v) =  \frac{1}{|S \times T|} \sum_{i=1}^{n}
+  \sum_{j \neq j}^{n} \frac{1}{w_{ij}} \frac{1}{\lambda(x_i) \lambda(x_j)}{\bf 1}_{\left\lbrace u_{ij} \leq u
+  \right\rbrace} {\bf 1}_{\left\lbrace |t_j - t_i| \leq v \right\rbrace}}{K^*(u,v) = 1/|SxT| sum_{i=1,...,n}
+  sum_{j=1,...,n; j \neq j} 1/wij 1/(lambda(x_i)lambda(x_j)) 1{uij <=
+  u} 1{|tj - ti| <= v}}
 }
 
  \value{ A list containing:
@@ -68,8 +75,8 @@ T|}{n_v(n-1)} \sum_{i=1}^{n_v}
  \item{Khat}{ndist x ntimes matrix containing values of \eqn{\hat
  K_{ST}(u,v)}{K(u,v)}.}
 \item{Ktheo}{ndist x ntimes matrix containing theoretical
-values for a Poisson process (\eqn{\pi u^2 v}{pi u^2 v} for K
-and \eqn{\pi u^2 v}{pi u^2 v}) for K'.}
+values for a Poisson process; \eqn{\pi u^2 v}{pi u^2 v} for K
+and \eqn{2 \pi u^2 v}{2 pi u^2 v}) for K^*.}
 
  \item{dist, times, infectious}{parameters passed in argument.}
  }
@@ -95,7 +102,7 @@ data(fmd)
 data(northcumbria)
 FMD=as.3dpoints(fmd[,1]/1000,fmd[,2]/1000,fmd[,3])
 
-# estimation of the temporal intensity 
+# estimation of the temporal intensity
 M=density(FMD[,3],kernel="gaussian",n=200)
 mut=M$y[FMD[,3]]*dim(fmd)[1]
 

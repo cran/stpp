@@ -35,4 +35,4 @@ animation(xyt, s.region, t.region, runtime=1, incident="red", prevalent="pink3",
 None
 }
 
-\author{Peter Diggle, Edith Gabriel <edith.gabriel@univ-avignon.fr>.}
+\author{Peter J Diggle, Edith Gabriel <edith.gabriel@univ-avignon.fr>.}

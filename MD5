@@ -1,11 +1,11 @@
-0fcd05f71aaca50deea99a49cf8402c3 *DESCRIPTION
+c0e540c9649a4e0a36826ab5510db505 *DESCRIPTION
 606907ca62f76980c97adc4c0530e53e *NAMESPACE
 a5b0296f5ddd05e94b073fb21f326eb1 *R/STIKhat.r
 135007830bfc0553196e2e0726996456 *R/animation.r
 be8e5712b2bf852bca5ad63408706b9e *R/as.3dpoints.R
 57ca06e899a009e0d28f1ca300b12849 *R/is.3dpoints.R
 8f6fb9726f4d9cf92ec4a3a7c6f653e4 *R/plot.stpp.R
-94bbe590a3fe67a61cfd72d77e1e483a *R/plotK.R
+c609e10cc59907c4250c0968f4a97327 *R/plotK.R
 2204b3f31cc9b2ccba2e99f0791a1c8f *R/rinfec.r
 f079f009154bae3bd606a2e5aaa643a4 *R/rinter.r
 227523b3799945e0bc21215550481fa1 *R/rlgcp.r
@@ -15,8 +15,8 @@ f079f009154bae3bd606a2e5aaa643a4 *R/rinter.r
 a89e73378913f24c1f21a77b419bd6b7 *R/stan.R
 1b7c2157dadb00b7fb8febbc6951409d *data/fmd.rda
 2933ac2ba10196ff9a52378ad547aad1 *data/northcumbria.rda
-2b41b60d92084868bc30ced34409c821 *man/STIKhat.Rd
-ee92cfa4d84c2593655618c422f4280f *man/animation.Rd
+10afa259c6688d960d4c0cd183a11b18 *man/STIKhat.Rd
+f50826d0b890e75de777644b9d7dffb9 *man/animation.Rd
 6213d88bb1743821ce3e6efd9463528f *man/as.3dpoint.Rd
 8b2cc0c3a515f3ac28004933d7c9ee6d *man/fmd.Rd
 b9ec60179b119fae0172b2e6431b9ec2 *man/is.3dpoints.Rd

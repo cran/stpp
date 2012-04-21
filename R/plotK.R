@@ -23,7 +23,7 @@ plotK <- function(K,n=15,L=TRUE,persp=FALSE,legend=TRUE,...)
   if (isTRUE(persp))
     {
       mask <- matrix(0,ncol=length(K$times),nrow=length(K$dist))
-      for(i in 1:length(K$dist)){ for(j in 1:length(K$times)){mask[i,j] <- COL[iplace(x=k[i,j],X=M,xinc=diff(range(M))/(n-1))]}}
+      for(i in 1:length(K$dist)){ for(j in 1:length(K$times)){mask[i,j] <- COL[.iplace(x=k[i,j],X=M,xinc=diff(range(M))/(n-1))]}}
       COL <- mask[1:(length(K$dist)-1),1:(length(K$times)-1)]
       
       if(isTRUE(legend))
@@ -33,8 +33,8 @@ plotK <- function(K,n=15,L=TRUE,persp=FALSE,legend=TRUE,...)
           persp(x=K$dist, y=K$times, z=k, xlab="u",ylab="v", zlab="",expand=1, col=COL, ...)
           title(titl,cex.main=2)
           par(fig=c(0.825,1,0,1))
-          mini <- iplace(x=min(k,na.rm=T),X=M,xinc=diff(range(k))/(n-1))
-          maxi <- iplace(x=max(k,na.rm=T),X=M,xinc=diff(range(k))/(n-1))
+          mini <- .iplace(x=min(k,na.rm=T),X=M,xinc=diff(range(k))/(n-1))
+          maxi <- .iplace(x=max(k,na.rm=T),X=M,xinc=diff(range(k))/(n-1))
           legend("right",fill=colo(n)[maxi:mini],legend=M[maxi:mini],horiz=F,bty="n")
         }
       else
@@ -60,8 +60,8 @@ plotK <- function(K,n=15,L=TRUE,persp=FALSE,legend=TRUE,...)
           axis(2,at=at[length(at)],labels="v",cex.axis=2)
           title(titl,cex.main=2)
           par(fig=c(0,1,0.1,1))
-          mini <- iplace(x=min(k,na.rm=T),X=M,xinc=diff(range(k))/(n-1))
-          maxi <- iplace(x=max(k,na.rm=T),X=M,xinc=diff(range(k))/(n-1))
+          mini <- .iplace(x=min(k,na.rm=T),X=M,xinc=diff(range(k))/(n-1))
+          maxi <- .iplace(x=max(k,na.rm=T),X=M,xinc=diff(range(k))/(n-1))
           legend("right",fill=colo(n)[maxi:mini],legend=M[maxi:mini],horiz=F,bty="n")
         }
       else
