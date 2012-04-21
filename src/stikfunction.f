@@ -33,15 +33,24 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
       two=2d0
 
-      do iv=1,nt
-        nv=0
-        do i=1,n
-        if (txy(i).lt.(bsupt-t(iv))) then
-            nv=nv+1
-        end if
-        end do
-        nev(iv)=nv
-      end do
+
+	if (infd.eq.1) then
+      	do iv=1,nt
+        	nv=0
+        	do i=1,n
+        	if (txy(i).lt.(bsupt-t(iv))) then
+            	nv=nv+1
+	        end if	
+      	  end do
+        	nev(iv)=nv
+      	end do
+	end if
+	if (infd.eq.0) then
+      	do iv=1,nt
+        	nev(iv)=n
+      	end do
+	end if
+
 
       do iu=1,ns
       do iv=1,nt

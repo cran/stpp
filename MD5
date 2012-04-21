@@ -1,4 +1,4 @@
-c0e540c9649a4e0a36826ab5510db505 *DESCRIPTION
+d7c3f6608290048a9b1333bd99881cfd *DESCRIPTION
 606907ca62f76980c97adc4c0530e53e *NAMESPACE
 a5b0296f5ddd05e94b073fb21f326eb1 *R/STIKhat.r
 135007830bfc0553196e2e0726996456 *R/animation.r
@@ -33,4 +33,4 @@ ac28bb8b5f01145fe343c468be56b5c8 *man/stan.Rd
 b3fc08a4dc3c58fc4adbbd0bff10f9a1 *src/circ.f
 3daed904e34426202aaf70a08bc28ac3 *src/covst.f
 6235861b0e3dde53707422ea1569079f *src/matern.f
-aa1eea6d8045ffb936b2fb792e9a0aba *src/stikfunction.f
+8354278a964ba34416d169e3d064f603 *src/stikfunction.f
