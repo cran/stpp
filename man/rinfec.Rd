@@ -38,7 +38,7 @@ t0, inhibition=FALSE, ...)
   and \code{recent}. Must be choosen among "min", "max" and "prod". }
   \item{recent}{If ``\code{all}'' consider all previous events. If
   is an integer, say N, consider only the N most recent events.}
-  \item{lambda}{function or matrix define the intensity of a Poisson process if 
+  \item{lambda}{function or matrix defining the intensity of a Poisson process if 
   s.distr is Poisson.}
   \item{lmax}{upper bound for the value of lambda.}
   \item{nx, ny}{define the 2-D grid on which the intensity is evaluated if 

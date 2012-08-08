@@ -305,7 +305,10 @@
               nix <- findInterval(vec=s.grid$x,x=x[nx])
               niy <- findInterval(vec=s.grid$y,x=y[nx])
               nit <- findInterval(vec=t.grid$times,x=times[nx])
-              prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
+		  if (nix==0 | niy==0 | nit==0) 
+			prob=c(prob,NA)
+		  else	
+                  prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
             }
           
           M <- which(is.na(prob))
@@ -371,7 +374,10 @@
               nix <- findInterval(vec=s.grid$x,x=wx[nx])
               niy <- findInterval(vec=s.grid$y,x=wy[nx])
               nit <- findInterval(vec=t.grid$times,x=wtimes[nx])
-              prob <- c(prob,(Lambda[nix,niy,nit])/lambdamax)
+		  if (nix==0 | niy==0 | nit==0) 
+			prob=c(prob,NA)
+		  else	
+                  prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
             }
           M <- which(is.na(prob))
           if (length(M)!=0)

@@ -354,7 +354,10 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
               nix <- findInterval(vec=s.grid$x,x=x[ix])
               niy <- findInterval(vec=s.grid$y,x=y[ix])
               nit <- findInterval(vec=t.grid$times,x=times[ix])
-              prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
+		  if (nix==0 | niy==0 | nit==0) 
+			prob=c(prob,NA)
+		  else	
+                  prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
             }
           
           M <- which(is.na(prob))
@@ -407,7 +410,10 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
               nix <- findInterval(vec=s.grid$x,x=wx[ix])
               niy <- findInterval(vec=s.grid$y,x=wy[ix])
               nit <- findInterval(vec=t.grid$times,x=wtimes[ix])
-              prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
+              if (nix==0 | niy==0 | nit==0) 
+			prob=c(prob,NA)
+		  else	
+                  prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
             }
           M <- which(is.na(prob))
           if (length(M)!=0)

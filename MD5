@@ -1,4 +1,4 @@
-f7aad0102f56811f337f15dfb2b4b8f3 *DESCRIPTION
+5140efdfa00d05df3c4df17abc868e1a *DESCRIPTION
 606907ca62f76980c97adc4c0530e53e *NAMESPACE
 bef7f46daf3069ef62ee492abb44401c *R/PCFhat.R
 084d7dab63d09ef79783628e8f6d4c05 *R/STIKhat.r
@@ -8,11 +8,11 @@ be8e5712b2bf852bca5ad63408706b9e *R/as.3dpoints.R
 8f6fb9726f4d9cf92ec4a3a7c6f653e4 *R/plot.stpp.R
 4088ec51aad595ef859cf871a1f6e23e *R/plotK.R
 58c1208b4d201eb63dbb0dda101d01cb *R/plotPCF.R
-554f85b8de614448ce14440c2aa5eed2 *R/rinfec.r
+d7ab79e5181645d66a2bb61b2b2c13c9 *R/rinfec.r
 f079f009154bae3bd606a2e5aaa643a4 *R/rinter.r
-09ab0194bf3b0f45b22889f18319490e *R/rlgcp.r
+2631be4b4bc107dbc17c567653532880 *R/rlgcp.r
 711e78ec1ba0889978413e97656035d6 *R/rpcp.r
-d9d6dff6744f23d6ddc0c2f743bdd651 *R/rpp.r
+9d1d8967e7c921a6293bd5f2c32c6096 *R/rpp.r
 9db47a4479de72c85f203281d47b3bbb *R/sim.stpp.r
 727640dda76dab7700c66ca1ce945438 *R/stan.R
 713f76b84ace248c446dd40f6512fc4a *data/fmd.rda
@@ -27,14 +27,14 @@ a9c4393e4e071b6a6e16c233eabbaf34 *man/northcumbria.Rd
 cb7295735d62028d17ac29c26d8f3432 *man/plot.stpp.Rd
 35d4a4feb849d229be7ab3e1bafbcae2 *man/plotK.Rd
 bd3469397a5228c68a76236824973184 *man/plotPCF.Rd
-7a6f7da705e97c3c4906638003305752 *man/rinfec.Rd
+859492c08a007ac5dd0d41564377c930 *man/rinfec.Rd
 98d6ce6c713465ac1849bced1947804b *man/rinter.Rd
 33c97e1b7a19ac9856f4167ad212f5f0 *man/rlgcp.Rd
 2786e298a4bcc848d5a8145b69fc2c0f *man/rpcp.Rd
 da748983157d7ee8d91304ada2eba524 *man/rpp.Rd
 eeed207c5e7958887426be635818b712 *man/sim.stpp.Rd
 ac28bb8b5f01145fe343c468be56b5c8 *man/stan.Rd
-ced4aaca5f2e188ce3aefc3c0764f209 *man/stpp-package.Rd
+ef324ed0c1552077a64592d8be63e360 *man/stpp-package.Rd
 b3fc08a4dc3c58fc4adbbd0bff10f9a1 *src/circ.f
 3daed904e34426202aaf70a08bc28ac3 *src/covst.f
 6235861b0e3dde53707422ea1569079f *src/matern.f

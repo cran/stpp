@@ -226,13 +226,17 @@ t0, inhibition=FALSE, ...)
                                          up <- runif(1)
                                          nix <- findInterval(vec=s.grid$x,x=xp)
                                          niy <- findInterval(vec=s.grid$y,x=yp)
-                                         Up <- Lambda[nix,niy]/lmax
-                                         retain <- up <= Up
-                                         if ((retain==FALSE) || is.na(retain))
-                                           retain.eq.F <- FALSE
-                                         else
-                                           retain.eq.F <- TRUE
-                                      
+						     if (nix!=0 & niy!=0)
+							{
+                                          Up <- Lambda[nix,niy]/lmax
+                                          retain <- up <= Up
+                                          if ((retain==FALSE) || is.na(retain))
+                                            retain.eq.F <- FALSE
+                                          else
+                                            retain.eq.F <- TRUE
+							}
+							else 
+							  retain.eq.F <- FALSE
                                        }
                                    }
                                  M <- inout(pts=rbind(c(xp,yp),c(xp,yp)),poly=s.region)
