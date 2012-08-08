@@ -38,6 +38,7 @@ require(splancs)
 
   if (area>10) lambda <- lambda*area
   
+
   nev <- rep(0,ntimes)
   klist <- .Fortran("stikfunction", as.double(ptsx),
                     as.double(ptsy), as.double(ptst), 

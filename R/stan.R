@@ -59,11 +59,12 @@
 .rp.stan3d <- function(xyt,tlim,twid,states) {
   t=tlim[1];width=twid
   e=new.env()
-  stan.panel  <- rp.control(title="space-time animation",
+  stan.panel  <- rp.control(title="space-time animation",  
                             xyt=xyt, t=tlim[1], width=twid,
                             states=states,
                             e=e
                             )
+  Sys.sleep(0.5)
   rp.slider(stan.panel, t, title = "time", from=tlim[1], to=tlim[2], action = .stan3d.redraw,showvalue=TRUE)
   rp.slider(stan.panel, width, title = "window", from=0, to=diff(tlim), action = .stan3d.redraw,showvalue=TRUE)
   rp.button(stan.panel,action=function(p){par3d(FOV=0,userMatrix = rotationMatrix(0, 1,0,0));return(p)},title="reset axes")
@@ -97,8 +98,8 @@ XYT=as.3dpoints(X,Y,Z)
   if(missing(states)){
     ## default colouring scheme:
     states=list(
-      past=list(col="blue",radius=1/80,alpha=0.5,lit=FALSE),
-      present=list(col="red",radius=1/30,alpha=0.5,lit=FALSE),
+      past=list(col="blue",radius=1/100,alpha=0.5,lit=FALSE),
+      present=list(col="red",radius=1/60,alpha=0.5,lit=FALSE),
       ## still-to-come points are invisible (alpha=0)
       future=list(col="yellow",alpha=0.0,radius=1/80,lit=FALSE)
       )

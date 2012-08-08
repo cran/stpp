@@ -133,6 +133,9 @@ of the intensity.}
 Chan, G. and Wood A. (1997).  An algorithm for simulating stationary
 Gaussian random fields. Applied Statistics, Algorithm Section, 46, 171--181.
 
+Chan, G. and Wood A. (1999).  Simulation of stationary Gaussian vector fields.
+Statistics and Computing, 9, 265--268.
+
 Gneiting T. (2002). Nonseparable, stationary covariance functions
 for space-time data. Journal of the American Statistical Association,
 97, 590--600.

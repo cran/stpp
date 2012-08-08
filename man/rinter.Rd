@@ -96,11 +96,14 @@ ht = function(d,theta,delta,mut=0.3)
  return(res)
 }
 d=seq(0,1,length=100)
-plot(d,hs(d,theta=0.2,delta=0.1,mus=0.1),xlab="",ylab="",type="l",ylim=c(0,1),lwd=2,las=1)
+plot(d,hs(d,theta=0.2,delta=0.1,mus=0.1),xlab="",ylab="",type="l",
+ylim=c(0,1),lwd=2,las=1)
 lines(d,ht(d,theta=0.1,delta=0.05,mut=0.3),col=2,lwd=2)
-legend("bottomright",col=1:2,lty=1,lwd=2,legend=c(expression(h[s]),expression(h[t])),bty="n",cex=2)
+legend("bottomright",col=1:2,lty=1,lwd=2,legend=c(expression(h[s]),expression(h[t])),
+bty="n",cex=2)
 
-inh2 = rinter(npoints=100, hs=hs, gs="min", thetas=0.2, deltas=0.1, ht=ht, gt="min",	 thetat=0.1, deltat=0.05, inhibition=TRUE)
+inh2 = rinter(npoints=100, hs=hs, gs="min", thetas=0.2, deltas=0.1, ht=ht, gt="min",	 
+thetat=0.1, deltat=0.05, inhibition=TRUE)
 \dontrun{animation(inh2$xyt, runtime=15, cex=0.8)}
 
 # simple contagious process for given spatial and temporal regions

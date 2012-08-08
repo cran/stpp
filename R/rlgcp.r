@@ -351,9 +351,9 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
           prob <- NULL
           for(ix in 1:length(x))
             {
-              nix <- .iplace(X=s.grid$x,x=x[ix],xinc=s.grid$xinc)
-              niy <- .iplace(X=s.grid$y,x=y[ix],xinc=s.grid$yinc)
-              nit <- .iplace(X=t.grid$times,x=times[ix],xinc=t.grid$tinc)
+              nix <- findInterval(vec=s.grid$x,x=x[ix])
+              niy <- findInterval(vec=s.grid$y,x=y[ix])
+              nit <- findInterval(vec=t.grid$times,x=times[ix])
               prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
             }
           
@@ -404,9 +404,9 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
           prob <- NULL
           for(ix in 1:length(wx))
             {
-              nix <- .iplace(X=s.grid$x,x=wx[ix],xinc=s.grid$xinc)
-              niy <- .iplace(X=s.grid$y,x=wy[ix],xinc=s.grid$yinc)
-              nit <- .iplace(X=t.grid$times,x=wtimes[ix],xinc=t.grid$tinc)
+              nix <- findInterval(vec=s.grid$x,x=wx[ix])
+              niy <- findInterval(vec=s.grid$y,x=wy[ix])
+              nit <- findInterval(vec=t.grid$times,x=wtimes[ix])
               prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
             }
           M <- which(is.na(prob))

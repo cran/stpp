@@ -23,9 +23,9 @@ correction=TRUE, infectious=TRUE) }
 K-function is computed as for the homogeneous case (Diggle et
 al., 1995), i.e. considering \eqn{n/|S \times T|}{n/|SxT|} as
 an estimate of the space-time intensity.}
-\item{correction}{logical value. If \code{TRUE}, the Ripley's
-edge correction is used.} \item{infectious}{logical value. If
-\code{TRUE}, only future events
+\item{correction}{logical value. If \code{TRUE}, spatial (Ripley's) and temporal
+edge corrections are used.}
+\item{infectious}{logical value. If \code{TRUE}, only future events
   are considered. See Details.}
  }
 
@@ -61,13 +61,16 @@ T|}{n_v(n-1)} \sum_{i=1}^{n_v}
   \right\rbrace}}{K'(u,v) = |SxT|/(nv(n-1)) sum_{i=1,...,nv} sum_{j=1,...,nv; j>i} 1/wij 1{uij <=
   u} 1{tj - ti <= v}}
 
-If parameter \code{infectious = TRUE}, both future and past
+If parameter \code{infectious = FALSE}, both future and past
 events are considered and the estimator is: \deqn{
   \widehat K^*_{ST}(u,v) =  \frac{1}{|S \times T|} \sum_{i=1}^{n}
   \sum_{j \neq j}^{n} \frac{1}{w_{ij}} \frac{1}{\lambda(x_i) \lambda(x_j)}{\bf 1}_{\left\lbrace u_{ij} \leq u
   \right\rbrace} {\bf 1}_{\left\lbrace |t_j - t_i| \leq v \right\rbrace}}{K^*(u,v) = 1/|SxT| sum_{i=1,...,n}
-  sum_{j=1,...,n; j \neq j} 1/wij 1/(lambda(x_i)lambda(x_j)) 1{uij <=
+  sum_{j=1,...,n; j \neq j} 1/wij 1/(lambda(xi)lambda(xj)) 1{uij <=
   u} 1{|tj - ti| <= v}}
+  where \eqn{v_{ij}}{vij} is equal to 1 if both ends of the
+  interval of length \eqn{2 |t_i - t_j|}{2|ti-tj|} centred at \eqn{t_i}{ti} lie within
+  T and 1/2 otherwise.
 }
 
  \value{ A list containing:
@@ -100,22 +103,27 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr> }
 \examples{\dontrun{
 data(fmd)
 data(northcumbria)
-FMD=as.3dpoints(fmd[,1]/1000,fmd[,2]/1000,fmd[,3])
+FMD<-as.3dpoints(fmd[,1]/1000,fmd[,2]/1000,fmd[,3])
+Northcumbria=northcumbria/1000
 
 # estimation of the temporal intensity
-M=density(FMD[,3],kernel="gaussian",n=200)
-mut=M$y[FMD[,3]]*dim(fmd)[1]
+Mt<-density(FMD[,3],n=1000)
+mut<-Mt$y[findInterval(FMD[,3],Mt$x)]*dim(FMD)[1]
 
 # estimation of the spatial intensity
-h = mse2d(pts=FMD[,1:2], poly=northcumbria/1000, nsmse=100, range=5)
-hs=h$h[h$mse==min(h$mse)]
-require(spatialkernel)
-mhat <- lambdahat(pts=as.points(FMD[,1:2]), h=hs, gpts=as.points(FMD[,1:2]), poly = northcumbria/1000, edge = TRUE)$lambda
+h<-mse2d(as.points(FMD[,1:2]), Northcumbria, nsmse=50, range=4)
+h<-h$h[which.min(h$mse)]
+Ms<-kernel2d(as.points(FMD[,1:2]), Northcumbria, h, nx=5000, ny=5000)
+atx<-findInterval(x=FMD[,1],vec=Ms$x)
+aty<-findInterval(x=FMD[,2],vec=Ms$y)
+mhat<-NULL
+for(i in 1:length(atx)) mhat<-c(mhat,Ms$z[atx[i],aty[i]])
 
 # estimation of the STIK function
 u <- seq(0,10,by=1)
 v <- seq(0,15,by=1)
-stik <- STIKhat(xyt=FMD, s.region=northcumbria/1000,t.region=c(1,200), lambda=mhat*mut/dim(fmd)[1], dist=u, times=v, infectious=T)
+stik <- STIKhat(xyt=FMD, s.region=northcumbria/1000,t.region=c(1,200), 
+lambda=mhat*mut/dim(FMD)[1], dist=u, times=v, infectious=TRUE)
 
 # plotting the estimation
 plotK(stik)

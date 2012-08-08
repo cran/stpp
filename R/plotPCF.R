@@ -1,4 +1,4 @@
-plotK <- function(K,n=15,L=TRUE,persp=FALSE,legend=TRUE,...)
+plotPCF <- function(PCF,n=15,persp=FALSE,legend=TRUE,...)
 {
 devl=dev.list()
 if(is.null(devl))
@@ -14,19 +14,10 @@ old.par <- par(no.readonly = TRUE)
 on.exit(par(old.par))
 }
 
-  if (isTRUE(L))
-    {
-      k <- K$Khat-K$Ktheo
-      if (isTRUE(K$infectious))	
-        titl <- expression(hat(K)[ST] * group("(",list(u,v),")") - pi*u^2*v)
-      else
-        titl <- expression(hat(K)[ST] * group("(",list(u,v),")") - 2*pi*u^2*v)
-    }
-  else
-    {
-      k <- K$Khat
-      titl <- expression(hat(K)[I] * group("(",list(u,v),")") )
-    }
+ k=PCF$pcf
+ K=PCF
+
+ titl <- expression(hat(g)* group("(",list(u,v),")") )
 
 
   colo <- colorRampPalette(c("red", "white", "blue"))
@@ -62,7 +53,7 @@ on.exit(par(old.par))
     {
       if(isTRUE(legend))
         {
-          par(cex.lab=1.5,cex.axis=1.5,font=2,lwd=1,plt=c(0,1,0,1),mar=c(0.5,0.5,2.5,0.5),las=1)
+          par(cex.lab=1.5,cex.axis=1.5,font=2,lwd=1,plt=c(0,1,0,1),mar=c(0.5,0.5,2.5,.5),las=1)
           par(fig=c(0.1,0.825,0.1,1))
           contour(K$dist, K$times, k, labcex=1.5,levels=M,drawlabels=F,col=colo(n),zlim=range(M),axes=F)
           box(lwd=2)
@@ -73,7 +64,7 @@ on.exit(par(old.par))
           axis(2,at=at[1:(length(at)-1)],labels=at[1:(length(at)-1)])
           axis(2,at=at[length(at)],labels="v",cex.axis=2)
           title(titl,cex.main=2)
-          par(fig=c(0,1,0.1,1))
+	    par(fig=c(0,1,0.1,1))
           mini <- findInterval(x=min(k,na.rm=TRUE),vec=M)
           maxi <- findInterval(x=max(k,na.rm=TRUE),vec=M)
           legend("right",fill=colo(n)[maxi:mini],legend=M[maxi:mini],horiz=F,bty="n")

@@ -25,7 +25,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
       implicit real*8(a-h,o-z)
 
-      integer n,ns,nt,np,infd,edg,is,it,iu,iv,nv
+      integer n,ns,nt,np,infd,edg,is,it,iu,iv,nv,i,j
       double precision hkhat(ns,nt), lambda(n), two
       dimension x(n),y(n),txy(n),xp(np+1),yp(np+1),s(ns),t(nt)
       double precision binf, binft, bsup, bsupt, ti, tij
@@ -33,24 +33,19 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
       two=2d0
 
-
-	if (infd.eq.1) then
+	  if (infd.eq.1) then
       	do iv=1,nt
         	nv=0
         	do i=1,n
-        	if (txy(i).lt.(bsupt-t(iv))) then
+        	if (edg.eq.0) then
+                nv=nv+1
+            end if
+            if ((edg.eq.1).and.(txy(i).lt.(bsupt-t(iv)))) then
             	nv=nv+1
 	        end if	
-      	  end do
+      	    end do
         	nev(iv)=nv
       	end do
-	end if
-	if (infd.eq.0) then
-      	do iv=1,nt
-        	nev(iv)=n
-      	end do
-	end if
-
 
       do iu=1,ns
       do iv=1,nt
@@ -64,7 +59,36 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             hij=dsqrt((xi-x(j))*(xi-x(j)) + (yi-y(j))*(yi-y(j)))
             tij=dabs(ti-txy(j))
             if ((tij.le.t(iv)).and.(hij.le.s(iu))) then
-                if ((infd.eq.0).and.(edg.eq.1)) then
+               if (edg.eq.1) then
+                wij=weight(xi,yi,hij,xp,yp,np)
+                wij=wij/(lambda(i)*lambda(j))
+                hkhat(iu,iv)=hkhat(iu,iv)+wij
+               end if
+               if (edg.eq.0) then
+                wij=1d0/(lambda(i)*lambda(j))
+                hkhat(iu,iv)=hkhat(iu,iv)+wij
+               end if
+            end if
+        end do
+        end do
+        hkhat(iu,iv)=hkhat(iu,iv)*(n*1d0/nv)
+        end do
+        end do
+	  end if
+
+	  if (infd.eq.0) then
+      do iu=1,ns
+      do iv=1,nt
+        do i=1,n
+        xi=x(i)
+        yi=y(i)
+        ti=txy(i)
+        do j=1,n
+        if (j.ne.i) then
+            hij=dsqrt((xi-x(j))*(xi-x(j)) + (yi-y(j))*(yi-y(j)))
+            tij=dabs(ti-txy(j))
+            if ((tij.le.t(iv)).and.(hij.le.s(iu))) then
+                if (edg.eq.1) then
                     bsup=ti+tij
                     binf=ti-tij
                     if ((bsup.le.bsupt).and.(binf.ge.binft)) then
@@ -74,39 +98,22 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
                     end if
                     wij=weight(xi,yi,hij,xp,yp,np)
                     wij=vij*wij/(lambda(i)*lambda(j))
-
-                    bsup=txy(j)+tij
-                    binf=txy(j)-tij
-                    if ((bsup.le.bsupt).and.(binf.ge.binft)) then
-                        vji=1d0
-                        else
-				        vji=two
-                    end if
-                    wji=weight(x(j),y(j),hij,xp,yp,np)
-                    wji=vji*wji/(lambda(i)*lambda(j))
-                    hkhat(iu,iv)=hkhat(iu,iv)+wij+wji
-                   end if
-               if ((infd.eq.1).and.(edg.eq.1)) then
-                if ((ti-txy(j)).le.t(iv)) then
-                    wij=weight(xi,yi,hij,xp,yp,np)
-                    wij=wij/(lambda(i)*lambda(j))
                     hkhat(iu,iv)=hkhat(iu,iv)+wij
                 end if
-               end if
-               if ((infd.eq.0).and.(edg.eq.0)) then
-                wij=two/(lambda(i)*lambda(j))
-                hkhat(iu,iv)=hkhat(iu,iv)+wij
-               end if
-               if ((infd.eq.1).and.(edg.eq.0)) then
-                wij=1d0/(lambda(i)*lambda(j))
-                hkhat(iu,iv)=hkhat(iu,iv)+wij
-               end if
+                if (edg.eq.0) then
+                    vij=1d0
+                    wij=vij/(lambda(i)*lambda(j))
+                    hkhat(iu,iv)=hkhat(iu,iv)+wij
+                end if
             end if
-            end do
-         end do
-         hkhat(iu,iv)=hkhat(iu,iv)*(n*1d0/nv)
+        end if
         end do
         end do
+        end do
+        end do
+	  end if
+
+
 
       return
 

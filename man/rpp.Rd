@@ -8,8 +8,7 @@ Generate one (or several) realisation(s) of the (homogeneous or inhomogeneous) P
 
 \usage{
 rpp(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE,
-    discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, 
-    Lambda=NULL, ...)
+    discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, ...)
 }
 
 \arguments{
@@ -17,7 +16,7 @@ rpp(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE,
   If \code{lambda} is a single positive number, the function generates 
   realisations of a homogeneous Poisson process, whilst if \code{lambda} 
   is a function of the form \eqn{\lambda(x,y,t,\dots)}{lambda(x,y,t,...)} 
-  or a character it generates realisations of an inhomogeneous Poisson process.}
+  or a 3D-array it generates realisations of an inhomogeneous Poisson process.}
   \item{s.region}{two-column matrix specifying polygonal region containing
   all data locations. 
    If \code{s.region} is missing, the unit square is considered.}
@@ -36,7 +35,6 @@ rpp(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE,
   is evaluated. }
   \item{lmax}{upper bound for the value of \eqn{\lambda(x,y,t)}{lambda(x,y,t)}, if
   \code{lambda} is a function.} 
-  \item{Lambda}{3D-array of spatio-temporal intensity if \code{lambda} is a character.}
   \item{...}{additional parameters if \code{lambda} is a function.}
 }
 
@@ -90,7 +88,7 @@ Ls = kernel2d(as.points(fmd[,1:2]), northcumbria, h, nx=100, ny=100)
 Lt = dim(fmd)[1]*density(fmd[,3], n=200)$y
 Lst=array(0,dim=c(100,100,200))
 for(k in 1:200) Lst[,,k] <- Ls$z*Lt[k]/dim(fmd)[1]
-ipp2 = rpp(lambda="m", Lambda=Lst, s.region=northcumbria, t.region=c(1,200), discrete.time=TRUE)
+ipp2 = rpp(lambda=Lst, s.region=northcumbria, t.region=c(1,200), discrete.time=TRUE)
 \dontrun{           
 par(mfrow=c(1,1))
 image(Ls$x, Ls$y, Ls$z, col=grey((1000:1)/1000)); polygon(northcumbria)

@@ -1,6 +1,6 @@
 \name{sim.stpp}
 \alias{sim.stpp}
-\title{Generate spatio-temoral point patterns}
+\title{Generate spatio-temporal point patterns}
 
 \description{
 Generate one (or several) realisation(s) of a spatio-temporal point process in a region S x T.

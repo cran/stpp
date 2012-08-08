@@ -108,20 +108,6 @@
   }
 
 
-.iplace <- function(X,x,xinc)
-  {
-    n <- length(X)
-    i <- 0
-     repeat
-       {
-         i <- i+1
-         if ((x >= X[i]-xinc) & (x < X[i]+xinc))
-           break
-       }
-    ip <- i
-    return(ip)
-  }
-
 
 .ripp <- function(lambda, s.region, t.region, npoints=NULL, replace=TRUE, discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, Lambda=NULL, ...)
 {
@@ -316,9 +302,9 @@
           prob <- NULL
           for(nx in 1:length(x))
             {
-              nix <- .iplace(X=s.grid$x,x=x[nx],xinc=s.grid$xinc)
-              niy <- .iplace(X=s.grid$y,x=y[nx],xinc=s.grid$yinc)
-              nit <- .iplace(X=t.grid$times,x=times[nx],xinc=t.grid$tinc)
+              nix <- findInterval(vec=s.grid$x,x=x[nx])
+              niy <- findInterval(vec=s.grid$y,x=y[nx])
+              nit <- findInterval(vec=t.grid$times,x=times[nx])
               prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
             }
           
@@ -382,9 +368,9 @@
           prob <- NULL
           for(nx in 1:length(wx))
             {
-              nix <- .iplace(X=s.grid$x,x=wx[nx],xinc=s.grid$xinc)
-              niy <- .iplace(X=s.grid$y,x=wy[nx],xinc=s.grid$yinc)
-              nit <- .iplace(X=t.grid$times,x=wtimes[nx],xinc=t.grid$tinc)
+              nix <- findInterval(vec=s.grid$x,x=wx[nx])
+              niy <- findInterval(vec=s.grid$y,x=wy[nx])
+              nit <- findInterval(vec=t.grid$times,x=wtimes[nx])
               prob <- c(prob,(Lambda[nix,niy,nit])/lambdamax)
             }
           M <- which(is.na(prob))
@@ -418,7 +404,7 @@
 }
   
 
-rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, Lambda=NULL, ...)
+rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, discrete.time=FALSE, nx=100, ny=100, nt=100, lmax=NULL, ...)
 {
 
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
@@ -443,7 +429,7 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
   # Homogeneous Poisson Process
   #
 
-  if (is.numeric(lambda))
+  if (is.numeric(lambda) & length(lambda)==1)
     {
       while(ni<=nsim)
         {
@@ -467,7 +453,7 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
   # Inhomogeneous Poisson Process
   #
 
-  if (is.function(lambda))
+  else if (is.function(lambda))
     {
       s.grid <- .make.grid(nx,ny,s.region)
       s.grid$mask <- matrix(as.logical(s.grid$mask),nx,ny)
@@ -515,9 +501,13 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
           ni <- ni+1
         }
     }
-
-  if (is.character(lambda))
+     
+ else if (is.array(lambda))
     {
+      if (length(dim(lambda))!=3) stop ("lambda must be a 3D-array")
+      Lambda = lambda
+      lambda = "a"
+
       while(ni<=nsim)
         {
           ipp <- .ripp(lambda=lambda, s.region=s.region, t.region=t.region, npoints=npoints, replace=replace, discrete.time=discrete.time, nx=nx, ny=ny, nt=nt, lmax=lmax, Lambda=Lambda, ...)
@@ -535,6 +525,7 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
           ni <- ni+1
         }
     }
+    else stop("lambda must be either a single positive value or a function or a 3D-array")
   
   invisible(return(list(xyt=pattern,index.t=index.t,s.region=s.region,t.region=t.region,lambda=lambda,Lambda=Lambda)))
 }
