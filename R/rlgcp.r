@@ -97,12 +97,12 @@
                 if (model[1]=="matern")
 			{
                   mods <- 7
-			if (param[2]<=0 | param[1]<=0) stop("Matern model parameters must be strictly positive")
+			if (param[3]<=0 | param[1]<=0) stop("Matern model parameters must be strictly positive")
                   }
 		    if (model[2]=="matern")
 			{
                   modt <- 7
-			if (param[3]<=0 | param[4]<=0) stop("Matern model parameters must be strictly positive")
+			if (param[2]<=0 | param[4]<=0) stop("Matern model parameters must be strictly positive")
                   }
               }
       }
@@ -165,16 +165,10 @@
                  as.double(param),
                  as.double(sigma2),
                  as.double(scale))[[1]]
- if (model[1]==7) mods=.matern(dist,scale=scale[1],alpha=param[2],nu=param[1])
- if (model[2]==7) modt=.matern(times,scale=scale[2],alpha=param[4],nu=param[3])
- if (model[1]==7 & model[2]==7) gs=mods%*%t(modt)
- if (model[1]==7 & model[2]!=7) gs=mods*gs
- if (model[2]==7 & model[1]!=7) gs=gs*modt
 
 
   if (plot==TRUE)
     {
-#      image(dist,times,gs,col=grey(((10*max(length(times),length(dist))):1)/(10*max(length(times),length(dist)))),xlab="h",ylab="t",cex.axis=1.5,cex.lab=2,font=2)
       image(dist,times,gs,col=grey((1000:1)/1000),xlab="h",ylab="t",cex.axis=1.5,cex.lab=2,font=2)
       contour(dist,times,gs,add=T,col=4,labcex=1.5,nlevels=nlevels)
     }
@@ -318,7 +312,7 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
       
       if (is.null(npoints))
         {
-          en <- sum(Lambda,na.rm=TRUE)*s.grid$xinc*s.grid$yinc
+          en <- sum(Lambda,na.rm=TRUE)*s.grid$xinc*s.grid$yinc*t.grid$tinc
           npoints <- round(rpois(n=1,lambda=en),0)
         }
 

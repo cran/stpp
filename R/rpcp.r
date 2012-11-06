@@ -102,8 +102,8 @@
         }
       if (s.distr=="exponential")
         {
-          xp <- xpar+rexp(nc,rate=1/dispersions)
-          yp <- ypar+rexp(nc,rate=1/dispersions)
+          xp <- xpar+sample(c(-1,1),nc,replace=TRUE)*rexp(nc,rate=1/dispersions)
+          yp <- ypar+sample(c(-1,1),nc,replace=TRUE)*rexp(nc,rate=1/dispersions)
         }
       if (t.distr=="uniform")
         {
@@ -165,8 +165,8 @@
         }
       if (s.distr=="exponential")
         {
-          xp <- xpar+rexp(1,rate=1/dispersions)
-          yp <- ypar+rexp(1,rate=1/dispersions)
+          xp <- xpar+sample(c(-1,1),1)*rexp(1,rate=1/dispersions)
+          yp <- ypar+sample(c(-1,1),1)*rexp(1,rate=1/dispersions)
         }
       if (t.distr=="uniform")
         {

@@ -32,7 +32,7 @@ c=====================================================================
                NK = I+1+J*M(1)+K*M(1)*M(2)
                if ((I.le.MHALF(1)) .and. (J.le.MHALF(2)) 
      &              .and. (K.le.MHALF(3))) then
-                  CEM(NK) = COV3(gk(DBLE(I)/DBLE(N(1)),xlim,dble(N(1))),
+                CEM(NK) = COV3(gk(DBLE(I)/DBLE(N(1)),xlim,dble(N(1))),
      &                 gk(DBLE(J)/DBLE(N(2)),ylim,dble(N(2))),
      &                 gk(DBLE(K)/DBLE(N(3)),tlim,dble(N(3))),
      &                 model,param,sigma2,scale)
@@ -175,13 +175,19 @@ c
 c
 c     model = 7 (Matern)
 c
-
       if(model(1).eq.7) then
          theta(1) = 1d0
-         theta(2) = 1d0
+         theta(2) = p3
          theta(3) = p1
          mods = matern(theta,dx)
       endif 
+
+      if(model(2).eq.7) then
+         theta(1) = 1d0
+         theta(2) = p4
+         theta(3) = p2
+         modt = matern(theta,dt)
+      endif
 
 c      
 c     product
@@ -346,8 +352,8 @@ c
         t2l = one/theta(2)
         t3  = theta(3)
 c
-c        t2  = two*dsqrt(t3)*t2l
-        t2 = t21
+        t2  = two*dsqrt(t3)*t2l
+c        t2 = t21
 c     
         d = x
         if( d .le. zero ) then

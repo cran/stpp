@@ -137,11 +137,17 @@ c     model = 7 (Matern)
 c
 
       if(model(1).eq.7) then
-         mods=1d0
-      endif
+         theta(1) = 1d0
+         theta(2) = p3
+         theta(3) = p1
+         mods = matern(theta,dx)
+      endif 
 
       if(model(2).eq.7) then
-        modt=1d0
+         theta(1) = 1d0
+         theta(2) = p4
+         theta(3) = p2
+         modt = matern(theta,dt)
       endif
 
 c

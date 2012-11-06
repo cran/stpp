@@ -78,9 +78,9 @@ The purely spatial and purely temporal covariance functions can be:
   = (x/2)^nu sum_{k=0}^infty 1/(k! Gamma(nu+k+1)) (x/2)^(2k)}.
   
 The parameters \eqn{\alpha_1}{alpha1} and \eqn{\alpha_2}{alpha2} correspond 
-to the parameters of the spatial and temporal covariance respectively. Except for 
-the Matern model, for which the parameters \eqn{\alpha_1}{alpha1}, \eqn{\alpha_2}{alpha2} 
-and \eqn{\alpha_3}{alpha3}, \eqn{\alpha_4}{alpha4} correspond 
+to the parameters of the spatial and temporal covariance respectively. For
+the Matern model, the parameters \eqn{\alpha_1}{alpha1}, \eqn{\alpha_3}{alpha3} 
+and \eqn{\alpha_2}{alpha2}, \eqn{\alpha_4}{alpha4} correspond 
 to the parameters \eqn{\nu}{nu}, \eqn{\alpha}{alpha} of the spatial and temporal 
 covariance.
 }

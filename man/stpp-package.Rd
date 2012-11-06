@@ -1,7 +1,7 @@
 \name{stpp}
 \docType{package}
-\alias{stpp-package}
 \alias{stpp}
+\alias{stpp-package}
 
 \title{Space-Time Point Pattern simulation, visualisation and analysis}
 
