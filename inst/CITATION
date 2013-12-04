@@ -1,0 +1,21 @@
+citHeader("To cite stpp in publications use:")
+
+citEntry(entry = "Article",
+  title        = "{stpp}: An {R} Package for Plotting, Simulating and Analyzing Spatio-Temporal Point Patterns",
+  author       = personList(as.person("Edith Gabriel"),
+                   as.person("Barry Rowlingson"),
+                   as.person("Peter Diggle")),
+  journal      = "Journal of Statistical Software",
+  year         = "2013",
+  volume       = "53",
+  number       = "2",
+  pages        = "1--29",
+  url          = "http://www.jstatsoft.org/v53/i02/",
+
+  textVersion  =
+  paste("Edith Gabriel, Barry Rowlingson, Peter Diggle (2013).",
+        "stpp: An R Package for Plotting, Simulating and Analyzing Spatio-Temporal Point Patterns.",
+        "Journal of Statistical Software, 53(2), 1-29.",
+        "URL http://www.jstatsoft.org/v53/i02/.")
+)
+

@@ -66,7 +66,7 @@ events are considered and the estimator is: \deqn{
   \widehat K^*_{ST}(u,v) =  \frac{1}{|S \times T|} \sum_{i=1}^{n}
   \sum_{j \neq j}^{n} \frac{1}{w_{ij}} \frac{1}{\lambda(x_i) \lambda(x_j)}{\bf 1}_{\left\lbrace u_{ij} \leq u
   \right\rbrace} {\bf 1}_{\left\lbrace |t_j - t_i| \leq v \right\rbrace}}{K^*(u,v) = 1/|SxT| sum_{i=1,...,n}
-  sum_{j=1,...,n; j \neq j} 1/wij 1/(lambda(xi)lambda(xj)) 1{uij <=
+  sum_{j=1,...,n; j \neq i} 1/wij 1/(lambda(xi)lambda(xj)) 1{uij <=
   u} 1{|tj - ti| <= v}}
   where \eqn{v_{ij}}{vij} is equal to 1 if both ends of the
   interval of length \eqn{2 |t_i - t_j|}{2|ti-tj|} centred at \eqn{t_i}{ti} lie within
@@ -84,9 +84,14 @@ and \eqn{2 \pi u^2 v}{2 pi u^2 v}) for K^*.}
  \item{dist, times, infectious}{parameters passed in argument.}
  }
 
-\references{ Gabriel E., Diggle P. (2009) Second-order analysis
+\references{Gabriel E., Diggle P. (2009) Second-order analysis
 of inhomogeneous spatio-temporal point process data. Statistica
 Neerlandica, 63, 43--51.
+
+Gabriel E., Rowlingson B., Diggle P. (2013)
+stpp: an R package for plotting, simulating and analyzing 
+Spatio-Temporal Point Patterns. Journal of Statistical Software, 
+53(2), 1--29.
 
 Baddeley A., Moller J. and Waagepetersen R. (2000). Non- and
 semi-parametric estimation of interaction in inhomogeneous

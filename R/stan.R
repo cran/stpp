@@ -60,12 +60,12 @@
   t=tlim[1];width=twid
   e=new.env()
   stan.panel  <- rp.control(title="space-time animation",  
-                            xyt=xyt, t=tlim[1], width=twid,
+                            xyt=xyt, time=tlim[1], width=twid,
                             states=states,
                             e=e
                             )
   Sys.sleep(0.5)
-  rp.slider(stan.panel, t, title = "time", from=tlim[1], to=tlim[2], action = .stan3d.redraw,showvalue=TRUE)
+  rp.slider(stan.panel, time, title = "time", from=tlim[1], to=tlim[2], action = .stan3d.redraw,showvalue=TRUE)
   rp.slider(stan.panel, width, title = "window", from=0, to=diff(tlim), action = .stan3d.redraw,showvalue=TRUE)
   rp.button(stan.panel,action=function(p){par3d(FOV=0,userMatrix = rotationMatrix(0, 1,0,0));return(p)},title="reset axes")
   rp.button(stan.panel,action=.store,title="quit",quitbutton=TRUE)
@@ -75,7 +75,7 @@
 }
 
 .store = function(panel){
- assign("t",panel$t,envir=panel$e)
+ assign("t",panel$time,envir=panel$e)
  assign("width",panel$width,envir=panel$e)
  return(panel)
 }
@@ -163,6 +163,7 @@ XYT=as.3dpoints(X,Y,Z)
     XYT[i,4]=points3d(XYT[i,1,drop=FALSE],XYT[i,2,drop=FALSE],XYT[i,3,drop=FALSE],alpha=0.0)
   }
   cat("...done\n")
+
   env = .rp.stan3d(XYT,tlim,twid,states)
   ret=list()
   for(n in ls(env)){

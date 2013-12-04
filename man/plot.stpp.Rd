@@ -44,3 +44,10 @@ None}
  }
 
 \author{Edith Gabriel <edith.gabriel@univ-avignon.fr>.}
+
+\references{
+Gabriel E., Rowlingson B., Diggle P. (2013)
+stpp: an R package for plotting, simulating and analyzing 
+Spatio-Temporal Point Patterns. Journal of Statistical Software, 
+53(2), 1--29.
+}

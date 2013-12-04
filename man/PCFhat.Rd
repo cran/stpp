@@ -47,8 +47,8 @@ pair correlation function, based on data giving the locations
 of events \eqn{x_i: i=1,...n}{xi: i=1...,n} on a
 spatio-temporal region \eqn{S \times T}{SxT}, where S is an
 arbitrary polygon and \eqn{T=[T_0,T_1]}{T=[T0,T1]}: \deqn{
-  \widehat g(u,v) =  \frac{1}{|S \times T|} \sum_{i=1}^{n}
-  \sum_{j \neq j}^{n} \frac{1}{w_{ij} v_{ij}} \frac{k_{s}(u - \|s_i-s_j\|)k_{t}(v-|t_i-t_j|)}{\lambda(x_i) \lambda(x_j)}}{g(u,v) = 1/|SxT| sum_{i=1,...,n}
+  \widehat g(u,v) =  \frac{1}{|S \times T|} \frac{1}{4 \pi u} \sum_{i=1}^{n}
+  \sum_{j \neq j}^{n} \frac{1}{w_{ij} v_{ij}} \frac{k_{s}(u - \|s_i-s_j\|)k_{t}(v-|t_i-t_j|)}{\lambda(x_i) \lambda(x_j)}}{g(u,v) = 1/|SxT| 1/(4 pi u) sum_{i=1,...,n}
   sum_{j=1,...,n; j \neq j} 1/(wij*vij)  ks(u -
   ||si-sj||)kt(v-|ti-tj|)/(lambda(xi)lambda(xj))}
 To deal with spatial edge-effects, we use Ripley's method, in
@@ -81,7 +81,13 @@ estimators as they heavily influence their variance. }
  \item{kernel}{a vector of names and bandwidths of the spatial and temporal kernels.}
  }
 
-\references{ Illian JB, Penttinen A, Stoyan H and Stoyan, D.
+\references{ 
+Gabriel E., Rowlingson B., Diggle P. (2013)
+stpp: an R package for plotting, simulating and analyzing 
+Spatio-Temporal Point Patterns. Journal of Statistical Software, 
+53(2), 1--29.
+
+Illian JB, Penttinen A, Stoyan H and Stoyan, D.
 (2008). Statistical Analysis and Modelling of Spatial Point
 Patterns. John Wiley and Sons, London.
  }

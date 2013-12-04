@@ -1,7 +1,7 @@
 \name{stpp}
 \docType{package}
-\alias{stpp}
 \alias{stpp-package}
+\alias{stpp}
 
 \title{Space-Time Point Pattern simulation, visualisation and analysis}
 
@@ -93,6 +93,11 @@ Methods in Medical Research, 4, 124--136.
 Gabriel E., Diggle P. (2009) Second-order analysis of
 inhomogeneous spatio-temporal point process data. Statistica
 Neerlandica, 63, 43--51.
+
+Gabriel E., Rowlingson B., Diggle P. (2013)
+stpp: an R package for plotting, simulating and analyzing 
+Spatio-Temporal Point Patterns. Journal of Statistical Software, 
+53(2), 1--29.
 
 Gneiting T. (2002). Nonseparable, stationary covariance functions
 for space-time data. Journal of the American Statistical Association,

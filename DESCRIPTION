@@ -1,8 +1,8 @@
 Package: stpp
 Type: Package
 Title: Space-Time Point Pattern simulation, visualisation and analysis
-Version: 1.0-2
-Date: 2012-11-06
+Version: 1.0-3
+Date: 2013-12-04
 Author: Edith Gabriel, Peter J Diggle, stan function by Barry
         Rowlingson
 Maintainer: Edith Gabriel <edith.gabriel@univ-avignon.fr>
@@ -12,9 +12,7 @@ Description: A package for analysing, simulating and displaying
         space-time point patterns
 License: GPL-3
 LazyLoad: yes
+Packaged: 2013-04-12 13:16:13 UTC; math
+NeedsCompilation: yes
 Repository: CRAN
-Repository/R-Forge/Project: stpp
-Repository/R-Forge/Revision: 62
-Repository/R-Forge/DateTimeStamp: 2012-11-06 10:18:44
-Date/Publication: 2012-11-06 16:16:29
-Packaged: 2012-11-06 11:20:53 UTC; rforge
+Date/Publication: 2013-04-12 16:44:32
