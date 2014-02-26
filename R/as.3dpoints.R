@@ -47,6 +47,8 @@ as.3dpoints <- function (...)
             stop("Cannot make object into points!")
         }
     }
+    x=sort(pts[,3],index.return=TRUE)
+    pts=pts[x$ix,]
     oldClass(pts)="stpp"
     pts
 }

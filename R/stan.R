@@ -192,9 +192,10 @@ XYT=as.3dpoints(X,Y,Z)
 	xr2=min(xyt[,1])+range(xr)*(diff(range(xyt[,1])))
  	yr2=min(xyt[,2])+range(yr)*(diff(range(xyt[,2])))
 	tr2=min(xyt[,3])+range(tr)*(diff(range(xyt[,3])))
-	xl=round(seq(min(xr2),max(xr2),length=5))
-	yl=round(seq(min(yr2),max(yr2),length=5))
-	tl=round(seq(min(tr2),max(tr2),length=5))
+	xl=pretty(xr2,n=5)
+	yl=pretty(yr2,n=5)
+	tl=pretty(tr2,n=5)
+	
 
 	axis3d('x-',at=seq(0,1,length=5),labels=xl,nticks=5)
   	axis3d('y-',at=seq(0,1,length=5),labels=yl,nticks=5)

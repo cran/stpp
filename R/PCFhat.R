@@ -1,11 +1,44 @@
-PCFhat <- function(xyt, s.region, t.region, dist, times, lambda, ks="box", hs, kt="box", ht, correction = TRUE) 
+PCFhat <- function(xyt, s.region, t.region, dist, times, lambda, ks="box", hs, kt="box", ht, correction="isotropic") 
 {
-require(splancs)
-require(KernSmooth)
+  correc=c("none","isotropic","border","modified.border","translate")
+  id <- match(correction, correc, nomatch = NA)
+  if (any(nbg <- is.na(id))) {
+        mess <- paste("unrecognised correction method:", paste(dQuote(correction[nbg]), 
+            collapse = ", "))
+        stop(mess, call. = FALSE)
+    }
+  id=unique(id)	
+  correc2=rep(0,5)
+  correc2[id]=1
 
   if (missing(s.region)) s.region <- sbox(xyt[,1:2],xfrac=0.01,yfrac=0.01)
-  if (missing(t.region)) t.region <- range(xyt[,3],na.rm=T)
-    
+  if (missing(t.region)) 
+	{
+      xr = range(xyt[,3],na.rm=TRUE)
+      xw = diff(xr)
+      t.region <- c(xr[1]-0.01*xw,xr[2]+0.01*xw)
+	}    
+  bsupt <- max(t.region)
+  binft <- min(t.region)
+  bdry=owin(poly=list(x=s.region[,1],y=s.region[,2]))
+
+  if (missing(dist))
+  {
+   rect=as.rectangle(bdry)
+   maxd=min(diff(rect$xrange),diff(rect$yrange))/4
+   dist=make.even.breaks(maxd,bstep=maxd/512)$r
+  } 
+  if (missing(times))
+  {
+  maxt=(bsupt-binft)/4
+  times=make.even.breaks(maxt,npos=15)$r
+   }
+
+   dist <- sort(dist)
+   if(dist[1]==0) dist=dist[-1]
+   times <- sort(times)
+   if(times[1]==0) times=times[-1]
+
   pts <- xyt[,1:2]
   xytimes <- xyt[,3]
   ptsx <- pts[, 1]
@@ -13,18 +46,14 @@ require(KernSmooth)
   ptst <- xytimes
   npt <- length(ptsx)
   ndist <- length(dist)
-  dist <- sort(dist)
   ntimes <- length(times)
-  times <- sort(times)
-  bsupt <- max(t.region)
-  binft <- min(t.region)
 
   area <- areapl(s.region)*(bsupt-binft)
 
   np <- length(s.region[, 1])
   polyx <- c(s.region[, 1], s.region[1, 1])
   polyy <- c(s.region[, 2], s.region[1, 2])
-  pcfhat <- array(0, dim = c(ndist,ntimes))
+  pcfhat <- array(0, dim = c(ndist,ntimes,5))
 
   frac=1	
   if (missing(hs))
@@ -55,16 +84,46 @@ require(KernSmooth)
   if(missing(lambda))
     {
       misl <- 1
-      lambda <- rep(1,npt)
+      lambda <- rep(npt/area,npt)
     }
   else misl <- 0
   if (length(lambda)==1) lambda <- rep(lambda,npt)
-  if (correction==TRUE){edg <- 1} else  edg <- 0
+
   storage.mode(pcfhat) <- "double"
  
-  if (area>10) lambda <- lambda*area
+  wbi=array(0,dim=c(npt,ndist,ntimes))
+  wbimod=array(0,dim=c(npt,ndist,ntimes))
+  wt = array(0,dim=c(npt,npt)) 
+
+  pppxy = ppp(x=ptsx,y=ptsy,window=bdry)
+
+#  correction=="border" and "modified border"
+   if(any(correction=="border")|any(correction=="modified.border"))
+   {
+   bi=bdist.points(pppxy)
+   bj=.bdist.times(xytimes,t.region)
+
+   for(i in 1:ndist) 
+	{ 
+   for(j in 1:ntimes)
+      {
+	  wbi[,i,j] = (bi>dist[i])*(bj>times[j])/sum((bi>dist[i])*(bj>times[j])/lambda)
+        wbimod[,i,j] = (bi>dist[i])*(bj>times[j])/(eroded.areas(bdry,dist[i])*.eroded.areat(t.region,times[j]))
+  	} }
+   wbi[is.na(wbi)]=0
+   }
+	
+# correction=="translate"
+	
+  if(any(correction=="translate"))
+  {
+  wtt = .overlap.tint(xytimes,t.region)
+  wts = edge.Trans(pppxy)
+  wt = wtt*wts
+  wt=1/wt
+  }
  
-  nev <- rep(0,ntimes)
+
   klist <- .Fortran("pcffunction", as.double(ptsx),
                     as.double(ptsy), as.double(ptst), 
                     as.integer(npt), as.double(polyx),
@@ -73,29 +132,24 @@ require(KernSmooth)
                     as.double(times), as.integer(ntimes),
                     as.double(bsupt), as.double(binft),
       		  as.double(lambda), as.integer(ks), as.integer(kt),
-                    as.integer(edg), as.double(hs),
- 			  as.double(ht), (pcfhat))
-  pcfhat <- klist[[20]]
+                    as.double(hs), as.double(ht), 
+			  (pcfhat), as.double(wbi),
+			  as.double(wbimod), as.double(wt),
+			  as.integer(correc2))
+  pcfhat <- klist[[19]]
 
-  if (misl==1) 
-   {
-    if (area>10)
-        pcfhat <- ((area^3)/(npt*(npt-1)))*pcfhat
-      else
-        pcfhat <- (area/(npt*(npt-1)))*pcfhat
-    }
-  else
-    {
-     if (area>10)
-        pcfhat <- pcfhat*area
-      else
-        pcfhat <- pcfhat/area
-    }
+  pcfhat[,,c(1,2,5)]=pcfhat[,,c(1,2,5)]/area
 
   pcfhat <- pcfhat/(4*pi*dist)
 
-    if(dist[1]==0) pcfhat[1,]=NA
-    if(times[1]==0) pcfhat[,1]=NA
+  if(length(id)==1) PCFhat=as.array(pcfhat[,,id])
+  else
+  {
+  PCFhat=list()
+  for(i in 1:length(id)) PCFhat[[i]]=pcfhat[,,id[i]]	
+  names(PCFhat)=correc[id]
+  }
+  correction=correc[id]
 
-  invisible(return(list(pcf=pcfhat,dist=dist,times=times,kernel=kernel)))  
+  invisible(return(list(pcf=PCFhat,dist=dist,times=times,kernel=kernel,correction=correction)))  
 }

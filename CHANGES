@@ -1,0 +1,6 @@
+CHANGES IN stpp VERSION 1.0-4
+
+* STIKhat and PCFhat can now consider several edge correction factors
+
+* plotK and plotPCF modified accordingly
+ 

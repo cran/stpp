@@ -8,9 +8,9 @@ S x T.
 }
 
 \usage{
- rpcp(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, mc=NULL, nsim=1, 
- cluster="uniform", dispersion, infectious=TRUE, edge = "larger.region", 
- larger.region=larger.region, tronc=1,...)
+ rpcp(s.region, t.region, nparents=NULL, npoints=NULL, lambda=NULL, 
+ mc=NULL, nsim=1, cluster="uniform", dispersion, infectious=TRUE, 
+ edge = "larger.region", larger.region=larger.region, tronc=1,...)
 }
 
 \arguments{
@@ -74,10 +74,12 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr>, Peter J Diggle.
 # homogeneous Poisson distribution of parents
 
 data(northcumbria)
-pcp1 <- rpcp(nparents=50, npoints=500, s.region=northcumbria, t.region=c(1,365),
-cluster=c("normal","exponential"), maxrad=c(5000,5))
+pcp1 <- rpcp(nparents=50, npoints=500, s.region=northcumbria, 
+t.region=c(1,365), cluster=c("normal","exponential"), 
+maxrad=c(5000,5))
 \dontrun{
-animation(pcp1$xyt, s.region=pcp1$s.region, t.region=pcp1$t.region,runtime=5)
+animation(pcp1$xyt, s.region=pcp1$s.region, t.region=pcp1$t.region,
+runtime=5)
 }
 # inhomogeneous Poisson distribution of parents
 

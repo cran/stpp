@@ -7,7 +7,8 @@ Generate one (or several) realisation(s) of a spatio-temporal point process in a
 }
 
 \usage{
-sim.stpp(class="poisson", s.region, t.region, npoints=NULL, nsim=1, ...)
+sim.stpp(class="poisson", s.region, t.region, npoints=NULL, 
+nsim=1, ...)
 }
 
 \arguments{

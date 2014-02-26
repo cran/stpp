@@ -14,6 +14,8 @@ if (inherits(x,"stpp")==TRUE)
 		  points(x[,1:2],...)
 		  title("xy-locations")	 
 		}
+        xx=sort(x[,3],index.return=TRUE) 
+        x=x[xx$ix,]
 	  plot(x[,3],cumsum(x[,3]),type="l",xlab="t",ylab="",main="cumulative number",las=1,xlim=t.region)
  	  }
 	if (mark==TRUE)

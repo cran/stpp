@@ -8,9 +8,10 @@ in a region S x T.
 }
 
 \usage{
- rlgcp(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100, 
- ny=100, nt=100,separable=TRUE,model="exponential",param=c(1,1,1,1,1,2),
- scale=c(1,1),var.grf=1,mean.grf=0,lmax=NULL,discrete.time=FALSE,exact=FALSE)
+ rlgcp(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, 
+ nx=100, ny=100, nt=100,separable=TRUE,model="exponential",
+ param=c(1,1,1,1,1,2), scale=c(1,1),var.grf=1,mean.grf=0,
+ lmax=NULL,discrete.time=FALSE,exact=FALSE)
 }
 
 \arguments{
@@ -151,8 +152,8 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr>, Peter J Diggle.
 
 \examples{
 # non separable covariance function: 
-lgcp1 <- rlgcp(npoints=200, nx=50, ny=50, nt=50, separable=FALSE, model="gneiting",
- param=c(1,1,1,1,1,2), var.grf=1, mean.grf=0)
+lgcp1 <- rlgcp(npoints=200, nx=50, ny=50, nt=50, separable=FALSE, 
+model="gneiting", param=c(1,1,1,1,1,2), var.grf=1, mean.grf=0)
 N <- lgcp1$Lambda[,,1];for(j in 2:(dim(lgcp1$Lambda)[3])){N <-
 N+lgcp1$Lambda[,,j]}
 \dontrun{
@@ -160,8 +161,8 @@ image(N,col=grey((1000:1)/1000));box()
 animation(lgcp1$xyt, cex=0.8, runtime=10, add=TRUE, prevalent="orange")
 }
 # separable covariance function: 
-lgcp2 <- rlgcp(npoints=200, nx=50, ny=50, nt=50, separable=TRUE, model="exponential",
- param=c(1,1,1,1,1,2), var.grf=2, mean.grf=-0.5*2)
+lgcp2 <- rlgcp(npoints=200, nx=50, ny=50, nt=50, separable=TRUE, 
+model="exponential", param=c(1,1,1,1,1,2), var.grf=2, mean.grf=-0.5*2)
 N <- lgcp2$Lambda[,,1];for(j in 2:(dim(lgcp2$Lambda)[3])){N <-
 N+lgcp2$Lambda[,,j]}
 \dontrun{

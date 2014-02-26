@@ -90,6 +90,11 @@ Diggle P. , Chedwynd A., Haggkvist R. and Morris S. (1995).
 Second-order analysis of space-time clustering. Statistical
 Methods in Medical Research, 4, 124--136.
 
+Gabriel E. (2014) Estimating second-order characteristics of 
+inhomogeneous spatio-temporal point processes: influence of 
+edge correction methods and intensity estimates.
+Methodology and computing in Applied Probabillity, 16(1).
+
 Gabriel E., Diggle P. (2009) Second-order analysis of
 inhomogeneous spatio-temporal point process data. Statistica
 Neerlandica, 63, 43--51.

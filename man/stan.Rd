@@ -5,8 +5,9 @@
  Displays (x,y,t) point data and enables dynamic highlighting of time slices.
 }
 \usage{
-stan(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FALSE,
-states,bgpoly,bgframe=TRUE,bgimage,bgcol=gray(seq(0,1,len=12)),axes=TRUE)
+stan(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,
+persist=FALSE,states,bgpoly,bgframe=TRUE,bgimage,
+bgcol=gray(seq(0,1,len=12)),axes=TRUE)
 }
 \arguments{
   \item{xyt}{A 3-column matrix of x,y,t coordinates}

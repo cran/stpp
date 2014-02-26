@@ -6,7 +6,8 @@ C     of the space-time pair correlation function.
 C
 
       subroutine pcffunction(x,y,txy,n,xp,yp,np,s,ns,t,nt,
-     +     bsupt,binft,lambda,ks,kt,edg,hs,ht,pcfhat)
+     +	bsupt,binft,lambda,ks,kt,hs,ht,pcfhat,
+     +	wbi,wbimod,wt,correc)
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
@@ -23,11 +24,12 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
       implicit real*8(a-h,o-z)
 
-      integer n,ns,nt,np,edg,is,it,iu,iv,nv,ks,kt
-      double precision pcfhat(ns,nt), two, hs, ht, lambda(n)
+      integer n,ns,nt,np,is,it,iu,iv,ks,kt,correc(5)
+      double precision pcfhat(ns,nt,5), two, hs, ht, lambda(n)
+      double precision wbi(n,ns,nt), wbimod(n,ns,nt), wt(n,n)
       dimension x(n),y(n),txy(n),xp(np+1),yp(np+1),s(ns),t(nt)
       double precision binf, binft, bsup, bsupt, ti, tij
-      double precision vij, wij, vji, wji, nev(nt)
+      double precision vij, wij
       double precision kern, kerns, kernt
 
       two=2d0
@@ -62,7 +64,8 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             end if
             kern=kerns*kernt
             if (kern.ne.0) then
-                if (edg.eq.1) then
+c isotropic
+			if(correc(2).eq.1) then
                     bsup=ti+tij
                     binf=ti-tij
                     if ((bsup.le.bsupt).and.(binf.ge.binft)) then
@@ -72,12 +75,31 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
                     end if
                     wij=weight(xi,yi,hij,xp,yp,np)
                     wij=kern*vij*wij/(lambda(i)*lambda(j))
-                    pcfhat(iu,iv)=pcfhat(iu,iv)+wij
-                end if
-                if (edg.eq.0) then
+                    pcfhat(iu,iv,2)=pcfhat(iu,iv,2)+wij
+			end if
+c None
+			if (correc(1).eq.1) then
                     wij=kern/(lambda(i)*lambda(j))
-                    pcfhat(iu,iv)=pcfhat(iu,iv)+wij
-                end if
+                    pcfhat(iu,iv,1)=pcfhat(iu,iv,1)+wij
+			end if
+c border
+			if (correc(3).eq.1) then
+                	  wij=wbi(i,iu,iv)
+                	  wij=kern*wij/(lambda(i)*lambda(j))
+			  pcfhat(iu,iv,3)=pcfhat(iu,iv,3)+wij
+			end if
+c modified border
+			if (correc(4).eq.1) then
+                    wij=wbimod(i,iu,iv)
+    	              wij=kern*wij/(lambda(i)*lambda(j))
+			  pcfhat(iu,iv,4)=pcfhat(iu,iv,4)+wij
+			end if
+c translate
+			if (correc(5).eq.1) then
+           	    	  wij=wt(i,j)
+			  wij=kern*wij/(lambda(i)*lambda(j))
+			  pcfhat(iu,iv,5)=pcfhat(iu,iv,5)+wij	
+			end if
             end if
         end if
         end do

@@ -9,8 +9,8 @@ in a region S x T.
 
 \usage{
 rinfec(npoints, s.region, t.region, nsim=1, alpha, beta, gamma, 
-s.distr="exponential", t.distr="uniform", maxrad, delta, h="step", g="min", 
-recent=1, lambda=NULL, lmax=NULL, nx=100, ny=100, nt=1000, 
+s.distr="exponential", t.distr="uniform", maxrad, delta, h="step", 
+g="min", recent=1, lambda=NULL, lmax=NULL, nx=100, ny=100, nt=1000, 
 t0, inhibition=FALSE, ...)
 }
 
@@ -71,10 +71,11 @@ Edith Gabriel <edith.gabriel@univ-avignon.fr>, Peter J Diggle.
 \examples{
 \dontrun{
 # inhibition; spatial distribution: uniform
-inf1 = rinfec(npoints=100, alpha=0.2, beta=0.6, gamma=0.5, maxrad=c(0.075,0.5), 
-t.region=c(0,50), s.distr="uniform", t.distr="uniform", h="step", p="min", 
-recent="all", inhibition=TRUE)
-\dontrun{animation(inf1$xyt, cex=0.8, runtime=10)}
+inf1 = rinfec(npoints=100, alpha=0.2, beta=0.6, gamma=0.5, 
+maxrad=c(0.075,0.5), t.region=c(0,50), s.distr="uniform", 
+t.distr="uniform", h="step", p="min", recent="all", 
+inhibition=TRUE)
+animation(inf1$xyt, cex=0.8, runtime=10)
 
 # contagion; spatial distribution: Poisson with intensity a given matrix
 data(fmd)

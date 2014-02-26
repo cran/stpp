@@ -1,2 +1,8 @@
 useDynLib(stpp)
 exportPattern("^[^\\.]")
+
+
+import(splancs)
+import(spatstat)
+import(KernSmooth)
+

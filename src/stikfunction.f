@@ -6,7 +6,7 @@ C     of the space-time inhomogeneous K function.
 C
 
       subroutine stikfunction(x,y,txy,n,xp,yp,np,s,ns,t,nt,
-     +     bsupt,binft,lambda,infd,edg,hkhat)
+     +     bsupt,binft,lambda,infd,hkhat,wbi,wbimod,wt,correc)
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
@@ -25,15 +25,16 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
       implicit real*8(a-h,o-z)
 
-      integer n,ns,nt,np,infd,edg,is,it,iu,iv,nv,i,j
-      double precision hkhat(ns,nt), lambda(n), two
+      integer n,ns,nt,np,infd,edg,is,it,iu,iv,nv,i,j,correc(5)
+      double precision hkhat(ns,nt,5), lambda(n), two
+      double precision wbi(n,ns,nt), wbimod(n,ns,nt), wt(n,n)
       dimension x(n),y(n),txy(n),xp(np+1),yp(np+1),s(ns),t(nt)
       double precision binf, binft, bsup, bsupt, ti, tij
       double precision vij, wij, vji, wji, nev(nt)
 
       two=2d0
 
-	  if (infd.eq.1) then
+	if (infd.eq.1) then
       	do iv=1,nt
         	nv=0
         	do i=1,n
@@ -59,24 +60,19 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             hij=dsqrt((xi-x(j))*(xi-x(j)) + (yi-y(j))*(yi-y(j)))
             tij=dabs(ti-txy(j))
             if ((tij.le.t(iv)).and.(hij.le.s(iu))) then
-               if (edg.eq.1) then
+c isotropic
                 wij=weight(xi,yi,hij,xp,yp,np)
                 wij=wij/(lambda(i)*lambda(j))
-                hkhat(iu,iv)=hkhat(iu,iv)+wij
-               end if
-               if (edg.eq.0) then
-                wij=1d0/(lambda(i)*lambda(j))
-                hkhat(iu,iv)=hkhat(iu,iv)+wij
-               end if
-            end if
+                hkhat(iu,iv,2)=hkhat(iu,iv,2)+wij
+		 end if
         end do
         end do
-        hkhat(iu,iv)=hkhat(iu,iv)*(n*1d0/nv)
+        hkhat(iu,iv,2)=hkhat(iu,iv,2)*(n*1d0/nv)
         end do
         end do
-	  end if
+	 end if
 
-	  if (infd.eq.0) then
+	if (infd.eq.0) then
       do iu=1,ns
       do iv=1,nt
         do i=1,n
@@ -88,23 +84,42 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             hij=dsqrt((xi-x(j))*(xi-x(j)) + (yi-y(j))*(yi-y(j)))
             tij=dabs(ti-txy(j))
             if ((tij.le.t(iv)).and.(hij.le.s(iu))) then
-                if (edg.eq.1) then
+c isotropic
+			if(correc(2).eq.1) then
                     bsup=ti+tij
                     binf=ti-tij
                     if ((bsup.le.bsupt).and.(binf.ge.binft)) then
                       vij=1d0
                       else
-				      vij=two
+		          vij=two
                     end if
                     wij=weight(xi,yi,hij,xp,yp,np)
                     wij=vij*wij/(lambda(i)*lambda(j))
-                    hkhat(iu,iv)=hkhat(iu,iv)+wij
-                end if
-                if (edg.eq.0) then
+                    hkhat(iu,iv,2)=hkhat(iu,iv,2)+wij
+			end if
+c none
+			if (correc(1).eq.1) then
                     vij=1d0
                     wij=vij/(lambda(i)*lambda(j))
-                    hkhat(iu,iv)=hkhat(iu,iv)+wij
-                end if
+                    hkhat(iu,iv,1)=hkhat(iu,iv,1)+wij
+			end if
+c border
+			if (correc(3).eq.1) then
+	              wij=wbi(i,iu,iv)
+                    wij=wij/(lambda(i)*lambda(j))
+                    hkhat(iu,iv,3)=hkhat(iu,iv,3)+wij
+			end if
+c modified border
+			if (correc(4).eq.1) then
+                   wij=wbimod(i,iu,iv)
+                   wij=wij/(lambda(i)*lambda(j))
+                   hkhat(iu,iv,4)=hkhat(iu,iv,4)+wij
+			end if
+c translate
+			if (correc(5).eq.1) then
+	        	 wij=wt(i,j)/(lambda(i)*lambda(j))
+                   hkhat(iu,iv,5)=hkhat(iu,iv,5)+wij
+			end if
             end if
         end if
         end do
