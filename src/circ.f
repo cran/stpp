@@ -5,7 +5,7 @@ c     Computation of a the first row of the circulant embedding matrix
 c
 c
 c     AUTHOR        :  E. Gabriel
-c                      
+c
 c     DATE          :  09/02/2007
 c
 c     VERSION       :  1
@@ -30,7 +30,7 @@ c=====================================================================
          do 6 J = 0, M(2) - 1
             do 7 I = 0, M(1) - 1
                NK = I+1+J*M(1)+K*M(1)*M(2)
-               if ((I.le.MHALF(1)) .and. (J.le.MHALF(2)) 
+               if ((I.le.MHALF(1)) .and. (J.le.MHALF(2))
      &              .and. (K.le.MHALF(3))) then
                 CEM(NK) = COV3(gk(DBLE(I)/DBLE(N(1)),xlim,dble(N(1))),
      &                 gk(DBLE(J)/DBLE(N(2)),ylim,dble(N(2))),
@@ -40,11 +40,11 @@ c=====================================================================
                   CEM(NK) = CEM(M(1)-I+1+J*M(1)+K*M(1)*M(2))
                elseif (K.le.MHALF(3)) then
                   CEM(NK) = CEM(I+1+(M(2)-J)*M(1)+K*M(1)*M(2))
-               else 
+               else
                   CEM(NK) = CEM(I+1+J*M(1)+(M(3)-K)*M(1)*M(2))
                endif
 
- 7          continue 
+ 7          continue
  6       continue
  5    continue
 
@@ -58,14 +58,14 @@ c===========================================================
 
       double precision rk,lim(2),n
       double precision a, b, delta, deltahalf
-      
+
       a = lim(1)
       b = lim(2)
       delta = (b-a)/n
       deltahalf = delta/dble(2)
 
       gk = a + n*delta*rk + deltahalf
-      
+
       return
       end
 
@@ -76,7 +76,7 @@ c     Computation of a spatio-temporal covariance function
 c
 c
 c     AUTHOR        :  E. Gabriel
-c                      
+c
 c     DATE          :  24/01/2006
 c
 c     VERSION       :  1
@@ -89,9 +89,9 @@ c
 c  program
 c
       double precision function COV3(x,y,t,model,param,sigma2,scale)
-      
+
 c     implicit none
-      
+
       integer model(3)
       double precision x,y,t,dx,dt,param(6),sigma2,scale(2)
       double precision p1,p2,p3,p4,p5,p6
@@ -106,8 +106,11 @@ c     implicit none
       p5 = param(5)
       p6 = param(6)
 
-      dx=dsqrt(x*x+y*y)/scale(1)
-      dt=dabs(t)/scale(2)
+cc      dx=dsqrt(x*x+y*y)/scale(1)
+cc      dt=dabs(t)/scale(2)
+      dx=(x*x+y*y)/scale(1)
+      dt=(t**2)/scale(2)
+
       mod=0d0
       mods=0d0
       modt=0d0
@@ -180,7 +183,7 @@ c
          theta(2) = p3
          theta(3) = p1
          mods = matern(theta,dx)
-      endif 
+      endif
 
       if(model(2).eq.7) then
          theta(1) = 1d0
@@ -189,21 +192,21 @@ c
          modt = matern(theta,dt)
       endif
 
-c      
+c
 c     product
 c
 
       mod = mods * modt
 
 c
-c     model = 5 (Gneiting) 
+c     model = 5 (Gneiting)
 c
 
-      
+
       if(model(3).eq.5) then
          mod = gneiting(dx,dt,param)
       endif
-         
+
 c
 c     model = 6 (De Cesare)
 c
@@ -235,7 +238,7 @@ c
       end
 
 c
-c     Stable 
+c     Stable
 c
       double precision function stable(x,p)
 
@@ -258,13 +261,13 @@ c
       end
 
 c
-c     Wave 
+c     Wave
 c
       double precision function wave(x)
 
       double precision x,p
 
-      if (x.gt.0) then 
+      if (x.gt.0) then
          wave = dsin(x)/x
       endif
       if (x.eq.0) then
@@ -291,17 +294,23 @@ c
       p4 = param(4)
       p5 = param(5)
       p6 = param(6)
-      
-      if(p5.eq.1) psit=dsqrt((t**p3+1)**(p4))
-      if(p5.eq.2) psit=dsqrt((1+(t**p3)/p4)/(1+(t**p3)))
-      if(p5.eq.3) psit=dsqrt(-log(t**p3+1/p4)/log(p4))
-      if(p2.eq.1) res = psit**(p6) * stable(x/psit,p1)
-      if(p2.eq.2) res = psit**(p6) * cauchy(x/psit,p1)
-      
+
+cc      if(p5.eq.1) psit=dsqrt((t**p3+1)**(p4))
+cc      if(p5.eq.2) psit=dsqrt((1+(t**p3)/p4)/(1+(t**p3)))
+cc      if(p5.eq.3) psit=dsqrt(-log(t**p3+1/p4)/log(p4))
+cc      if(p2.eq.1) res = psit**(p6) * stable(x/psit,p1)
+cc      if(p2.eq.2) res = psit**(p6) * cauchy(x/psit,p1)
+
+      if(p5.eq.1) psit=(t**p3+1)**(p4)
+      if(p5.eq.2) psit=(1+(t**p3)/p4)/(1+(t**p3))
+      if(p5.eq.3) psit=log(t**p3+p4)/log(p4)
+      if(p2.eq.1) res = psit**(-p6) * stable(x/psit,p1)
+      if(p2.eq.2) res = psit**(-p6) * cauchy(x/psit,p1)
+
       gneiting = res
 
       return
-      end 
+      end
 
 c
 c     De Cesare
@@ -326,15 +335,15 @@ c
 c     calculate Matern class covariances
 c     If the smoothness is above 50 the Squared
 c     Exponential limiting covariance is used.
-c     
+c
 c     arguments:
 c     theta     parameter vector (scale, range, smoothness)
 c     x         vector of distances (input)
-c     
-c     for a technical introduction see 
-c     
-c     Handcock and Stein (1993), 
-c     'A Bayesian Analysis of Kriging',  
+c
+c     for a technical introduction see
+c
+c     Handcock and Stein (1993),
+c     'A Bayesian Analysis of Kriging',
 c     Technometrics, 35, 4, 403-410.
 c
 c     downloadable from:
@@ -354,7 +363,7 @@ c
 c
         t2  = two*dsqrt(t3)*t2l
 c        t2 = t21
-c     
+c
         d = x
         if( d .le. zero ) then
            matern = t1
@@ -367,7 +376,7 @@ c
               matern = t1*(p1**t3)*bk(it3+1)/cnv
            else
               p1 = t2l * d
-              matern = t1*dexp(-p1*p1)        
+              matern = t1*dexp(-p1*p1)
            endif
         endif
 

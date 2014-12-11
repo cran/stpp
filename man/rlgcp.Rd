@@ -10,7 +10,7 @@ in a region S x T.
 \usage{
  rlgcp(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, 
  nx=100, ny=100, nt=100,separable=TRUE,model="exponential",
- param=c(1,1,1,1,1,2), scale=c(1,1),var.grf=1,mean.grf=0,
+ param=c(1,1,1,1,1,1), scale=c(1,1),var.grf=1,mean.grf=0,
  lmax=NULL,discrete.time=FALSE,exact=FALSE)
 }
 
@@ -91,26 +91,26 @@ covariance.
 
 The spatio-temporal covariance function can be:
 \itemize{
-\item gneiting: \eqn{c(h,t) = \psi (t/\beta_2)^{-\alpha_6} \phi \left(\frac{h/
-      \beta_1}{\psi (t/\beta_2)} \right)}{c(h,t)=psi(t/beta2)^(-alpha6) 
-      phi( (h/beta1)/psi(t/beta2) )}, \eqn{\beta_1, \beta_2 >0}{beta1, 
-      beta2 >0},
+\item gneiting: \eqn{c(h,t) = \psi (t^2/\beta_2)^{-\alpha_6} \phi \left(\frac{h^2/
+      \beta_1}{\psi (t^2/\beta_2)} \right)}{c(h,t)=psi(t^2/beta2)^(-alpha6) 
+      phi( (h^2/beta1)/psi(t^2/beta2) )}, \eqn{\beta_1, \beta_2 >0}{beta1, 
+      beta2 >0} are spatial and temporal scales respectively,
       \itemize{
   \item If \eqn{\alpha_2=1}{alpha2=1}, \eqn{\phi(r)}{phi(r)} is the Stable model.
   \item if \eqn{\alpha_2=2}{alpha2=2}, \eqn{\phi(r)}{phi(r)} is the Cauchy model.
   \item If \eqn{\alpha_2=3}{alpha2=3}, \eqn{\phi(r)}{phi(r)} is the Matern model.
-  \item If \eqn{\alpha_5=1}{alpha5=1}, \eqn{\psi^2(r) = (r^{\alpha_3}+
-  1)^{\alpha_4}}{psi^2(r) = (r^alpha3+1)^alpha4},
-  \item If \eqn{\alpha_5=2}{alpha5=2}, \eqn{\psi^2(r) = (\alpha_4^{-1} r^{\alpha_3}
-    +1)/(r^{\alpha_3}+1)}{psi^2(r) = (alpha4^(-1) r^alpha3 +1)/(r^alpha3+1)},
-  \item If \eqn{\alpha_5=3}{alpha5=3}, \eqn{\psi^2(r) = -\log(r^{\alpha_3} +
-   1/{\alpha_4})/\log {\alpha_4}}{psi^2(r) = -log(r^alpha3+1/alpha4)/
+  \item If \eqn{\alpha_5=1}{alpha5=1}, \eqn{\psi(r) = (r^{\alpha_3}+
+  1)^{\alpha_4}}{psi(r) = (r^alpha3+1)^alpha4},
+  \item If \eqn{\alpha_5=2}{alpha5=2}, \eqn{\psi(r) = (\alpha_4^{-1} r^{\alpha_3}
+    +1)/(r^{\alpha_3}+1)}{psi(r) = (alpha4^(-1) r^alpha3 +1)/(r^alpha3+1)},
+  \item If \eqn{\alpha_5=3}{alpha5=3}, \eqn{\psi(r) = \log(r^{\alpha_3} +
+   \alpha_4)/\log {\alpha_4}}{psi(r) = log(r^alpha3+alpha4)/
    log(alpha4)},
                 }
         
   The parameter \eqn{\alpha_1}{alpha1} is the respective parameter for the model of
-  \eqn{\phi(\cdot)}{phi(.)}, \eqn{\alpha_3 \in (0,2]}{alpha3 in (0,2]}, 
-  \eqn{\alpha_4 \in (0,1]}{alpha4 in (0,1]} and \eqn{\alpha_6 \geq 2}{alpha6 >= 2}.
+  \eqn{\phi(\cdot)}{phi(.)}, \eqn{\alpha_3 \in (0,1]}{alpha3 in (0,1]}, 
+  \eqn{\alpha_4 \in (0,1]}{alpha4 in (0,1]} and \eqn{\alpha_6 \geq 2}{alpha6 >= 1}.
 \item cesare: \eqn{c(h,t) = \left( 1 + (h/\beta_1)^{\alpha_1} +
     (t/\beta_2)^{\alpha_2} \right)^{-\alpha_3}}{c(h,t) = (1 + (h/beta1)^alpha1 +
     (t/beta2)^alpha2)^(-alpha3)}, \eqn{\beta_1, \beta_2 >0}{beta1, 

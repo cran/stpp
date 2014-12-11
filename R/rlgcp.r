@@ -36,9 +36,9 @@
             if (model=="stable")
               {
                 mods <- 2
-                if ((param[1] >2) | (param[1]<0)) stop("Stable model parameter must lie in [0,2]")
+                if ((param[1] >1) | (param[1]<0)) stop("Stable model parameter must lie in (0,1]")
                 modt <- 2
-                if ((param[2] >2) | (param[2]<0)) stop("Stable model parameter must lie in [0,2]")
+                if ((param[2] >1) | (param[2]<0)) stop("Stable model parameter must lie in (0,1]")
               }
             if (model=="cauchy")
               {
@@ -73,12 +73,12 @@
                 if (model[1]=="stable")
                     {
                       mods <- 2
-                      if ((param[1] >2) | (param[1]<0)) stop("Stable model parameter must lie in [0,2]")
+                      if ((param[1] >1) | (param[1]<0)) stop("Stable model parameter must lie in (0,1]")
                     }
                 if (model[2]=="stable")
                   {
                     modt <- 2
-                    if ((param[2] >2) | (param[2]<0)) stop("Stable model parameter must lie in [0,2]")
+                    if ((param[2] >1) | (param[2]<0)) stop("Stable model parameter must lie in (0,1]")
                   }
                 if (model[1]=="cauchy")
                   {
@@ -113,8 +113,8 @@
         if (model=="gneiting")
           {
             mod <- 5
-            if (param[6]<2) stop("for Gneiting's covariance function, the sixth parameter must be greater than 2")
-            if ((param[3]<=0) | (param[3]>2)) stop("for Gneiting's covariance function, the third parameter must lie in (0,2]")
+            if (param[6]<1) stop("for Gneiting's covariance function, the sixth parameter must be greater than 1")
+            if ((param[3]<=0) | (param[3]>1)) stop("for Gneiting's covariance function, the third parameter must lie in (0,1]")
             if ((param[4]<=0) | (param[4]>1)) stop("for Gneiting's covariance function, the fourth parameter must lie in (0,1]")
             if ((param[5]!=1) & (param[5]!=2) & (param[5]!=3)) stop("for Gneiting's covariance function, the fifth parameter must be 1, 2 or 3")
             if ((param[2]!=1) & (param[2]!=2) & (param[2]!=3)) stop("for Gneiting's covariance function, the second parameter must be 1, 2 or 3")
@@ -144,7 +144,7 @@
 }
 
 
-.covst <- function(dist,times,separable=TRUE,model,param=c(1,1,1,1,1,2),sigma2=1,scale=c(1,1),plot=TRUE,nlevels=10)
+.covst <- function(dist,times,separable=TRUE,model,param=c(1,1,1,1,1,1),sigma2=1,scale=c(1,1),plot=TRUE,nlevels=10)
 {
 
   nt <- length(times)
@@ -178,7 +178,7 @@
 }
 
 
-.gauss3D <- function(nx=100,ny=100,nt=100,xlim,ylim,tlim,separable=TRUE,model="exponential",param=c(1,1,1,1,1,2),scale=c(1,1),var.grf=1,mean.grf=0,exact=TRUE)
+.gauss3D <- function(nx=100,ny=100,nt=100,xlim,ylim,tlim,separable=TRUE,model="exponential",param=c(1,1,1,1,1,1),scale=c(1,1),var.grf=1,mean.grf=0,exact=TRUE)
 {
 
   N <- c(nx,ny,nt)
@@ -258,7 +258,7 @@
 
 
 
-rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100, ny=100, nt=100,separable=TRUE,model="exponential",param=c(1,1,1,1,1,2),scale=c(1,1),var.grf=1,mean.grf=0,lmax=NULL,discrete.time=FALSE,exact=FALSE)
+rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100, ny=100, nt=100,separable=TRUE,model="exponential",param=c(1,1,1,1,1,1),scale=c(1,1),var.grf=1,mean.grf=0,lmax=NULL,discrete.time=FALSE,exact=FALSE)
 {
   
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
