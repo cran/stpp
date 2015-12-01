@@ -16,7 +16,7 @@ if (inherits(x,"stpp")==TRUE)
 		}
         xx=sort(x[,3],index.return=TRUE) 
         x=x[xx$ix,]
-	  plot(x[,3],cumsum(x[,3]),type="l",xlab="t",ylab="",main="cumulative number",las=1,xlim=t.region)
+	  plot(cumsum(table(fmd[,3])),type="l",xlab="t",ylab="",main="Cumulative number of points",las=1,xlim=t.region)
  	  }
 	if (mark==TRUE)
 	 {
