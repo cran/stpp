@@ -22,7 +22,7 @@ c     pcfhat: zero matrix of dimension ns x nt.
 c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-      implicit real*8(a-h,o-z)
+      implicit double precision (a-h,o-z)
 
       integer n,ns,nt,np,is,it,iu,iv,ks,kt,correc(5)
       double precision pcfhat(ns,nt,5), two, hs, ht, lambda(n)
@@ -122,7 +122,7 @@ c--------------------------------------------------------------------
 
        function boxkernel(x,h)
 
-       implicit real*8 (a-h,o-z)
+       implicit double precision (a-h,o-z)
 
        double precision x, h
 
@@ -144,7 +144,7 @@ c--------------------------------------------------------------------
 
        function ekernel(x,h)
 
-       implicit real*8 (a-h,o-z)
+       implicit double precision (a-h,o-z)
 
        double precision x
 
@@ -166,7 +166,7 @@ c--------------------------------------------------------------------
 
        function gausskernel(x,h)
 
-       implicit real*8 (a-h,o-z)
+       implicit double precision (a-h,o-z)
 
        double precision x
 
@@ -185,7 +185,7 @@ c--------------------------------------------------------------------
 
        function qkernel(x,h)
 
-       implicit real*8 (a-h,o-z)
+       implicit double precision (a-h,o-z)
 
        double precision x, h
 

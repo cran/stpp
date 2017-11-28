@@ -14,31 +14,34 @@ c
 c
 c============================================================
 c
-      subroutine covst(gs,d,nh,time,nt,model,param,sigma2,scale)
+      subroutine covst(gs,xx,yy,tt,nx,ny,nt,model,param,sigma2,scale,
+     &                 aniso,ani)
 
 c       INPUT:
-c                nh        : number of distances
-c                d(nh)     : distances
-c                time      : time
+c                xx,yy,tt     : spatial and temporal coordinates
 c                model     : model
 c                param(6)  : covariance parameters
-
+c                aniso, ani : parameters for anisotropic covariances
 c
 c       OUTPUT:  gs        : covariance
 
       implicit none
 
-      integer          nh,nt
+      integer          nx,ny,nt
       integer          model(3)
-      double precision gs(nh,nt),d(nh),time(nt),param(6)
+      double precision gs(nx,ny,nt)
+      double precision xx(nx),yy(ny),tt(nt),param(6)
 
-      integer          i,j
-      double precision covar,scale(2),sigma2
+      integer          i,j,k
+      double precision covar,scale(2),sigma2,aniso,ani(2)
 
-      do j=1,nt
-         do i=1,nh
-            gs(i,j)=covar(d(i),time(j),model,param,sigma2,scale)
+      do k=1,nt
+        do j=1,ny
+         do i=1,nx
+            gs(i,j,k)=covar(xx(i),yy(j),tt(k),model,param,sigma2,scale,
+     &                      aniso,ani)
          end do
+        end do
       end do
 
       return
@@ -48,14 +51,16 @@ c ---------------------------------------------------------------------------
 c
 c  program
 c
-      double precision function covar(h,t,model,param,sigma2,scale)
+      double precision function covar(x,y,t,model,param,sigma2,scale,
+     &                                aniso,ani)
 
 c     implicit none
 
       integer model(3)
-      double precision h,t,dx,dt,param(6),sigma2,scale(2)
+      double precision x,y,t,dx,dt,param(6),sigma2,scale(2)
       double precision p1,p2,p3,p4,p5,p6
       double precision mod,mods,modt
+      double precision aniso,ani(2), xani,yani
       double precision cauchy,stable,exponential,wave,matern
       double precision gneiting,cesare,theta(3)
 
@@ -66,8 +71,23 @@ c     implicit none
       p5 = param(5)
       p6 = param(6)
 
-      dx=h/scale(1)
+      if (aniso.eq.1) then
+        xani = x*cos(ani(1)) + y*sin(ani(1))
+        yani = -x*sin(ani(1))/ani(2) + y*cos(ani(1))/ani(2)
+c        dx=x*cos(ani(1))*x*cos(ani(1)) +
+c     &     (x*sin(ani(1))/ani(2))*(x*sin(ani(1))/ani(2))
+c     &     + 2*x*y*cos(ani(1))*sin(ani(1))
+c     &     - 2*x*y*cos(ani(1))*sin(ani(1))/(ani(2)*ani(2))
+c     &     + y*sin(ani(1))*y*sin(ani(1))
+c     &     + (y*cos(ani(1))/ani(2))*(y*cos(ani(1))/ani(2))
+         dx=dsqrt(xani*xani+yani*yani)/scale(1)
+c        dx=dsqrt(dx)/scale(1)
+      else
+        dx=dsqrt(x*x+y*y)/scale(1)
+      end if
+
       dt=dabs(t)/scale(2)
+
       mod=0d0
       mods=0d0
       modt=0d0
@@ -141,7 +161,7 @@ c
          theta(2) = p3
          theta(3) = p1
          mods = matern(theta,dx)
-      endif 
+      endif
 
       if(model(2).eq.7) then
          theta(1) = 1d0

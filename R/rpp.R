@@ -233,11 +233,9 @@
           samp.remain <- (1:nt)[-samp]
           neffec <- length(x)
         }
-      times <- sort(times)
-      index.times <- sort(samp)
-      pattern.interm <- list(x=x,y=y,t=times,index.t=index.times)
-          pattern <- cbind(x=pattern.interm$x,y=pattern.interm$y,t=pattern.interm$t)
-      index.t <- pattern.interm$index.t
+      index.times <- sort(times,index.return=TRUE)$ix
+      pattern.interm <- list(x=x[index.times],y=y[index.times],t=times[index.times])
+      pattern <- cbind(x=pattern.interm$x,y=pattern.interm$y,t=pattern.interm$t)[index.times,]
     }
 
   if (is.character(lambda))
@@ -265,10 +263,12 @@
               vect <- round(seq(floor(t.region[1]),ceiling(t.region[2]),length=nt))
               t.grid <- list(times=vect,tinc=round(t.area/(nt-1)))
             }
-        }
+      }
       else
-        t.grid <- list(times=seq(t.region[1],t.region[2],length=nt),tinc=(t.area/(nt-1)))
-          
+       { 
+         t.grid <- list(times=seq(t.region[1],t.region[2],length=nt),tinc=(t.area/(nt-1)))
+       }
+      
       if (is.null(npoints))
         {
 	    en <- sum(Lambda,na.rm=TRUE)*s.grid$xinc*s.grid$yinc*t.grid$tinc 
@@ -276,137 +276,80 @@
         }
       if (is.null(lambdamax))
         lambdamax <- max(Lambda,na.rm=TRUE)
-#      npts <- round(lambdamax/(s.area*t.area),0)
-      npts <- npoints
-      if (npts==0) stop("there is no data to thin")
-
-      if ((replace==FALSE) & (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
+      
+      if ((replace==FALSE) & (nt < npoints)) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
       if (discrete.time==TRUE)
-        {
-          vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)
-          times.init <- sample(vect,nt,replace=replace)
-        }
+      {
+        vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)
+        times.init <- sample(vect,nt,replace=replace)
+        t.grid$times = times.init
+      }
+      ###      else
+      ###        times.init <- runif(nt,min=t.region[1],max=t.region[2])
+      
+      XX=rep(s.grid$X,nt)
+      YY=rep(s.grid$Y,nt)
+      TT=rep(t.grid$times,each=length(s.grid$X))
+      
+      df=NULL
+      for(nl in 1:nt)
+      {
+        LL = Lambda
+        LL[is.na(LL)] = -999
+        lambdal=as.im(list(x=s.grid$x,y=s.grid$y,z=LL[,,nl]))
+        df <- rbind(df,as.data.frame(lambdal))
+      }
+      df$value[df$value==-999]=0
+      
+      samp=sample.int(length(XX),npoints,replace=TRUE,prob=df$value)
+      xx <- XX[samp] + runif(npoints, -s.grid$xinc/2, s.grid$xinc/2)
+      yy <- YY[samp] + runif(npoints, -s.grid$yinc/2, s.grid$yinc/2)
+      
+      if (discrete.time==TRUE)
+        tt <- floor(TT[samp] + runif(npoints, -t.grid$tinc/2, t.grid$tinc/2))
       else
-        times.init <- runif(nt,min=t.region[1],max=t.region[2])
-
-      samp <- sample(1:nt,npts,replace=replace)
-      times <- times.init[samp]
-
+        tt <- TT[samp] + runif(npoints, -t.grid$tinc/2, t.grid$tinc/2)
+    
+      
+      xyt.init=cbind(x=xx,y=yy,t=tt)
+      
       retain.eq.F <- FALSE
       while(retain.eq.F==FALSE)
+      {
+        pts <- inpip(pts=cbind(xyt.init[,1],xyt.init[,2]),poly=s.region)
+        xyt.init <- xyt.init[pts,]
+        
+        ptt <- xyt.init[,3]>=t.region[1] & xyt.init[,3]<=t.region[2]
+        xyt.init <- xyt.init[ptt,]
+        
+        npts = dim(xyt.init)[1]
+        if (npts == npoints) retain.eq.F <- TRUE
+        else
         {
-          xy <- matrix(csr(poly=s.region,npoints=npts),ncol=2)
-          x <- xy[,1]
-          y <- xy[,2]
-    
-          prob <- NULL
-          for(nx in 1:length(x))
-            {
-              nix <- findInterval(vec=s.grid$x,x=x[nx])
-              niy <- findInterval(vec=s.grid$y,x=y[nx])
-              nit <- findInterval(vec=t.grid$times,x=times[nx])
-		  if (nix==0 | niy==0 | nit==0) 
-			prob=c(prob,NA)
-		  else	
-                  prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
-            }
+          samp=sample.int(length(XX),npoints-npts,replace=TRUE,prob=df$value)
           
-          M <- which(is.na(prob))
-          if (length(M)!=0)
-            {
-              x <- x[-M]
-              y <- y[-M]
-              times <- times[-M]
-              prob <- prob[-M]
-              npts <- length(x)
-            }
+          xx <- XX[samp] + runif(npoints-npts, -s.grid$xinc/2, s.grid$xinc/2)
+          yy <- YY[samp] + runif(npoints-npts, -s.grid$yinc/2, s.grid$yinc/2)
           
-          u <- runif(npts)
-          retain <- u <= prob
-          if (sum(retain==F)==length(retain)) retain.eq.F <- FALSE
-          else retain.eq.F <- TRUE
-        }
-#      if (sum(retain==FALSE)==length(retain)) stop ("no point was retained at the first iteration, please check your parameters")
+          if (discrete.time==TRUE)
+            tt <- floor(TT[samp] + runif(npoints-npts, -t.grid$tinc/2, t.grid$tinc/2))
+          else
+            tt <- TT[samp] + runif(npoints-npts, -t.grid$tinc/2, t.grid$tinc/2)
+          
+          xyt.init1=cbind(x=xx,y=yy,t=tt)
+          xyt.init=rbind(xyt.init,xyt.init1)
+        }}
+        
+        x<-xyt.init[,1]
+        y<-xyt.init[,2]
+        times<-xyt.init[,3]
       
-
-      if (sum(retain==FALSE)==length(retain))
-        {
-          lambdas <- matrix(0,nrow=nx,ncol=ny)
-          for(ix in 1:nx){for(iy in 1:ny){
-            lambdas[ix,iy] <- median(Lambda[ix,iy,],na.rm=TRUE)}}
-          lambdamax <- max(lambdas,na.rm=TRUE)
-          prob <-  lambda(x,y,times,...)/lambdamax
-          retain <- u <= prob
-          if (sum(retain==FALSE)==length(retain)) stop ("no point was retained at the first iteration, please check your parameters")
-        }
-
-      x <- x[retain]
-      y <- y[retain]
-      samp <- samp[retain]
-      samp.remain <- (1:nt)[-samp]
-      times <- times[retain]
-
-      neffec <- length(x)
-      if (neffec > npoints)
-        {
-          retain <- 1:npoints
-          x <- x[retain]
-          y <- y[retain]
-          samp <- samp[retain]
-          samp.remain <- (1:nt)[-samp]
-          times <- times[retain]
-        }
-
-      while(neffec < npoints)
-        {
-          xy <- as.matrix(csr(poly=s.region,npoints=npoints-neffec))
-          if(dim(xy)[2]==1){wx <- xy[1]; wy <- xy[2]}
-          else{wx <- xy[,1]; wy <- xy[,2]}
-          if(replace==FALSE)
-            { wsamp <- sample(samp.remain,npoints-neffec,replace=replace) }
-          else{ wsamp <- sample(1:nt,npoints-neffec,replace=replace) }
-          wtimes <- times.init[wsamp]
-#              lambdamax <- maxlambda[wsamp]
-
-          prob <- NULL
-          for(nx in 1:length(wx))
-            {
-              nix <- findInterval(vec=s.grid$x,x=wx[nx])
-              niy <- findInterval(vec=s.grid$y,x=wy[nx])
-              nit <- findInterval(vec=t.grid$times,x=wtimes[nx])
-		  if (nix==0 | niy==0 | nit==0) 
-			prob=c(prob,NA)
-		  else	
-                  prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
-            }
-          M <- which(is.na(prob))
-          if (length(M)!=0)
-            {
-              wx <- wx[-M]
-              wy <- wy[-M]
-              wtimes <- wtimes[-M]
-              prob <- prob[-M]
-            }
-          if (neffec > 0)
-            {
-              u <- runif(length(prob))
-              retain <- u <= prob
-              x <- c(x,wx[retain])
-              y <- c(y,wy[retain])
-              times <- c(times,wtimes[retain])
-              samp <- c(samp,wsamp[retain])
-              samp.remain <- (1:nt)[-samp]
-              neffec <- length(x)
-            }
-        }
-      times <- sort(times)
-      index.times <- sort(samp)
-      pattern.interm <- list(x=x,y=y,t=times,index.t=index.times)
-      pattern <- cbind(x=pattern.interm$x,y=pattern.interm$y,t=pattern.interm$t)
-      index.t <- pattern.interm$index.t
+        index.times <- sort(times,index.return=TRUE)$ix
+        pattern.interm <- list(x=x[index.times],y=y[index.times],t=times[index.times])
+        pattern <- cbind(x=pattern.interm$x,y=pattern.interm$y,t=pattern.interm$t)[index.times,]
     }
       
-  invisible(return(list(pts=pattern,index.t=index.t)))
+  invisible(return(list(pts=pattern)))
 }
   
 
@@ -497,12 +440,10 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
           if (nsim==1)
             {
               pattern <- as.3dpoints(ipp$pts)
-              index.t <- ipp$index.t
             }
           else
             {
               pattern[[ni]] <- as.3dpoints(ipp$pts)
-              index.t[[ni]] <- ipp$index.t
             }
           ni <- ni+1
         }
@@ -521,19 +462,17 @@ rpp <- function(lambda, s.region, t.region, npoints=NULL, nsim=1, replace=TRUE, 
           if (nsim==1)
             {
               pattern <- as.3dpoints(ipp$pts)
-              index.t <- ipp$index.t
             }
           else
             {
               pattern[[ni]] <- as.3dpoints(ipp$pts)
-              index.t[[ni]] <- ipp$index.t
             }
           ni <- ni+1
         }
     }
     else stop("lambda must be either a single positive value or a function or a 3D-array")
   
-  invisible(return(list(xyt=pattern,index.t=index.t,s.region=s.region,t.region=t.region,lambda=lambda,Lambda=Lambda)))
+  invisible(return(list(xyt=pattern,s.region=s.region,t.region=t.region,lambda=lambda,Lambda=Lambda)))
 }
 
 

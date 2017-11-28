@@ -23,7 +23,7 @@ c     hkhat: zero matrix of dimension ns x nt.
 c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-      implicit real*8(a-h,o-z)
+      implicit double precision(a-h,o-z)
 
       integer n,ns,nt,np,infd,edg,is,it,iu,iv,nv,i,j,correc(5)
       double precision hkhat(ns,nt,5), lambda(n), two
@@ -157,7 +157,7 @@ c--------------------------------------------------------------------
 c
 c which of the variable width bins s is t in?
 c
-      implicit real*8 (a-h,o-z)
+      implicit DOUBLE PRECISION (a-h,o-z)
 
       dimension s(ns)
 
@@ -185,7 +185,7 @@ c--------------------------------------------------------------------
 c
 c find the weight for the point at x,y, radius r
 c
-      implicit real*8 (a-h,o-z)
+      implicit DOUBLE PRECISION (a-h,o-z)
 
 c      include 'bounds.cmn'
 
@@ -217,7 +217,7 @@ c     compute the weight given to a point at x,y according to how much
 c     of a circle of radius r is inside the bounding polygon
 c
 c
-      implicit real*8 (a-h,o-z)
+      implicit DOUBLE PRECISION (a-h,o-z)
 c      include 'bounds.cmn'
       dimension xp(np+1),yp(np+1)
       parameter(pi=3.141592654d0)
@@ -401,7 +401,7 @@ c--------------------------------------------------------------------
 
 c     return the sign (+1,0,-1) of a value
 
-      real*8 tiny,value
+      DOUBLE PRECISION tiny,value
       if (value.gt.tiny) then
          isig8 = 1
       else if (value.lt.-tiny) then
@@ -427,7 +427,7 @@ c             real numbers
 c             on output first n elements of x are sorted from smallest
 c             to largest
 c
-      implicit real*8 (a-h,o-z)
+      implicit DOUBLE PRECISION (a-h,o-z)
       dimension x(n)
       i=1
     1 i=i+1
@@ -465,7 +465,7 @@ c
 c fortran version of C routine by Ken McElvain
 c
 
-      implicit real*8 (a-h,o-z)
+      implicit DOUBLE PRECISION (a-h,o-z)
 c      include 'bounds.cmn'
 
 
@@ -512,7 +512,7 @@ c
 c
 c determine which quadrant xp,yp is in relative to xo,yo as origin
 c
-      implicit real*8 (a-h,o-z)
+      implicit DOUBLE PRECISION (a-h,o-z)
 
         if(xp.lt.xo)then
                 if(yp.lt.yo) then

@@ -81,8 +81,10 @@
 }
 
 stan <- function(xyt,tlim=range(xyt[,3],na.rm=TRUE),twid=diff(tlim)/20,persist=FALSE,states,bgpoly,bgframe=TRUE,bgimage,bgcol=gray(seq(0,1,len=12)),axes=TRUE){
-  require(rgl)
-  require(rpanel)
+#  requireNamespace(rgl)
+#  requireNamespace(rpanel)
+  
+  verifyclass(xyt,"stpp")  
 
 X=(xyt[,1]-min(xyt[,1]))/(diff(range(xyt[,1])))
 Y=(xyt[,2]-min(xyt[,2]))/(diff(range(xyt[,2])))
@@ -179,7 +181,7 @@ XYT=as.3dpoints(X,Y,Z)
 }
 
 .setPlot=function(xmin,xmax,ymin,ymax,tmin,tmax,radius=1/20,xyt,axes){
-  require(rgl)
+#  requireNamespace(rgl)
   diag=sqrt((xmax-xmin)^2+(ymax-ymin)^2+(tmax-tmin)^2)
   xr=c(xmax,xmin)+c(radius*(xmax-xmin),-radius*(xmax-xmin))*2
   yr=c(ymax,ymin)+c(radius*(ymax-ymin),-radius*(ymax-ymin))*2

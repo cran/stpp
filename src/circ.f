@@ -8,18 +8,22 @@ c     AUTHOR        :  E. Gabriel
 c
 c     DATE          :  09/02/2007
 c
-c     VERSION       :  1
+c     VERSION       :  2
+c                      Modified: 17/03/2017 for anisotropic separable
+c                      covariance functions
 c
 c
 c=====================================================================
 
-      subroutine circ(CEM,M,N,xlim,ylim,tlim,model,param,sigma2,scale)
+      subroutine circ(CEM,M,N,xlim,ylim,tlim,model,param,sigma2,scale,
+     &                   aniso,ani)
 
       integer M(3), N(3)
       double precision xlim(2), ylim(2), tlim(2), sigma2, scale(2)
       double precision CEM(M(1)*M(2)*M(3)), MHALF(3)
       double precision COV3, gk
       integer model(3)
+      double precision ani(2), aniso
       double precision param(6)
 
       do 2 I = 1,3
@@ -35,7 +39,7 @@ c=====================================================================
                 CEM(NK) = COV3(gk(DBLE(I)/DBLE(N(1)),xlim,dble(N(1))),
      &                 gk(DBLE(J)/DBLE(N(2)),ylim,dble(N(2))),
      &                 gk(DBLE(K)/DBLE(N(3)),tlim,dble(N(3))),
-     &                 model,param,sigma2,scale)
+     &                 model,param,sigma2,scale,aniso,ani)
                elseif ((J.le.MHALF(2)) .and. (K.le.MHALF(3))) then
                   CEM(NK) = CEM(M(1)-I+1+J*M(1)+K*M(1)*M(2))
                elseif (K.le.MHALF(3)) then
@@ -88,12 +92,14 @@ c
 c
 c  program
 c
-      double precision function COV3(x,y,t,model,param,sigma2,scale)
+      double precision function COV3(x,y,t,model,param,sigma2,scale,
+     &          aniso,ani)
 
 c     implicit none
 
       integer model(3)
       double precision x,y,t,dx,dt,param(6),sigma2,scale(2)
+      double precision xani, yani, ani(2), aniso
       double precision p1,p2,p3,p4,p5,p6
       double precision mod,mods,modt
       double precision cauchy,stable,exponential,wave,matern
@@ -106,10 +112,25 @@ c     implicit none
       p5 = param(5)
       p6 = param(6)
 
-cc      dx=dsqrt(x*x+y*y)/scale(1)
-cc      dt=dabs(t)/scale(2)
-      dx=(x*x+y*y)/scale(1)
-      dt=(t**2)/scale(2)
+
+      if (aniso.eq.1) then
+        xani = x*cos(ani(1)) + y*sin(ani(1))
+        yani = -x*sin(ani(1))/ani(2) + y*cos(ani(1))/ani(2)
+c        dx=x*cos(ani(1))*x*cos(ani(1)) +
+c     &     (x*sin(ani(1))/ani(2))*(x*sin(ani(1))/ani(2))
+c     &     + 2*x*y*cos(ani(1))*sin(ani(1))
+c     &     - 2*x*y*cos(ani(1))*sin(ani(1))/(ani(2)*ani(2))
+c     &     + y*sin(ani(1))*y*sin(ani(1))
+c     &     + (y*cos(ani(1))/ani(2))*(y*cos(ani(1))/ani(2))
+         dx=dsqrt(xani*xani+yani*yani)/scale(1)
+c        dx=dsqrt(dx)/scale(1)
+      else
+        dx=dsqrt(x*x+y*y)/scale(1)
+      end if
+
+      dt=dabs(t)/scale(2)
+cc      dx=(x*x+y*y)/scale(1)
+cc      dt=(t**2)/scale(2)
 
       mod=0d0
       mods=0d0

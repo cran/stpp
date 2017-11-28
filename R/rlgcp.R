@@ -1,3 +1,5 @@
+
+
 .set.cov <- function(separable,model,param,sigma2)
   {
     mods <- 0
@@ -144,41 +146,47 @@
 }
 
 
-.covst <- function(dist,times,separable=TRUE,model,param=c(1,1,1,1,1,1),sigma2=1,scale=c(1,1),plot=TRUE,nlevels=10)
+.covst <- function(x,y,times,separable=TRUE,model,param=c(1,1,1,1,1,1),sigma2=1,scale=c(1,1),plot=TRUE,nlevels=10,aniso=0,ani.pars=c(0,1))
 {
 
   nt <- length(times)
-  np <- length(dist)
+  nx = length(x)
+  ny = length(y)
 
   model <- .set.cov(separable,model,param,sigma2)
   
-  gs <- array(0, dim = c(np,nt))
+  gs <- array(0, dim = c(nx,ny,nt))
   storage.mode(gs) <- "double"
 
   gs <- .Fortran("covst",
                  (gs),
-                 as.double(dist),
-                 as.integer(np),
+                 as.double(x),
+                 as.double(y),
                  as.double(times),
+                 as.integer(nx),
+                 as.integer(ny),
                  as.integer(nt),
                  as.integer(model),
                  as.double(param),
                  as.double(sigma2),
-                 as.double(scale))[[1]]
+                 as.double(scale),
+                 as.double(aniso),
+                 as.double(ani.pars))[[1]]
 
 
   if (plot==TRUE)
     {
-      image(dist,times,gs,col=grey((1000:1)/1000),xlab="h",ylab="t",cex.axis=1.5,cex.lab=2,font=2)
-      contour(dist,times,gs,add=T,col=4,labcex=1.5,nlevels=nlevels)
+      image(x,y,gs[,,2],col=grey((1000:1)/1000),xlab="x",ylab="y",cex.axis=1.5,cex.lab=2,font=2)
+      contour(x,y,gs[,,2],add=T,col=4,labcex=1.5,nlevels=nlevels)
+
     }
   
-  return(gs)
+  invisible(return(list(x=x,y=y,times=times,gs=gs)))
 
 }
 
 
-.gauss3D <- function(nx=100,ny=100,nt=100,xlim,ylim,tlim,separable=TRUE,model="exponential",param=c(1,1,1,1,1,1),scale=c(1,1),var.grf=1,mean.grf=0,exact=TRUE)
+.gauss3D <- function(nx=100,ny=100,nt=100,xlim,ylim,tlim,separable=TRUE,model="exponential",param=c(1,1,1,1,1,1),scale=c(1,1),var.grf=1,mean.grf=0,exact=TRUE,aniso=0,ani.pars=c(0,1))
 {
 
   N <- c(nx,ny,nt)
@@ -206,7 +214,9 @@
                       as.integer(mod), 
                       as.double(param),
                       as.double(var.grf),
-                      as.double(scale))[[1]]
+                      as.double(scale),
+                      as.double(aniso),
+                      as.double(ani.pars))[[1]]
  
       L <- array(res,dim=M)
       FTL <- fft(L)
@@ -232,47 +242,63 @@
     }
   print(count)
   
-  X <- array(rnorm(M[1]*M[2]*M[3],0,1),dim=M)
-  X <- fft(X,inverse=TRUE)
-  A <- sqrt(FTL)*X
-  G <- (Re(fft(A,inverse=FALSE))/(M[1]*M[2]*M[3]))[1:N[1],1:N[2],1:N[3]]
-  G <- G+mean.grf
+#  X <- array(rnorm(M[1]*M[2]*M[3],0,1),dim=M)
+#  X <- fft(X,inverse=TRUE)
+#  A <- sqrt(FTL)*X
+#  G <- (Re(fft(A,inverse=FALSE))/(M[1]*M[2]*M[3]))[1:N[1],1:N[2],1:N[3]]
+#  G <- G+mean.grf
 
 ## Remarks
 # --------
 #
 #  The right way is:
-#    X1 <- array(rnorm(M[1]*M[2]*M[3],0,1),dim=M)
-#    X2 <- array(rnorm(M[1]*M[2]*M[3],0,1),dim=M)
-#    X <- fft(X1+1i*X2,inverse=TRUE)
-#    A <- sqrt(FTL)*X
-#    G <- (Re(fft(A,inverse=FALSE))/(M[1]*M[2]*M[3]))[1:N[1],1:N[2],1:N[3]]
+    X1 <- array(rnorm(M[1]*M[2]*M[3],0,1),dim=M)
+    X2 <- array(rnorm(M[1]*M[2]*M[3],0,1),dim=M)
+    X <- fft(X1+1i*X2,inverse=TRUE)
+    A <- sqrt(FTL)*X
+    G <- (Re(fft(A,inverse=FALSE))/(M[1]*M[2]*M[3]))[1:N[1],1:N[2],1:N[3]]
 #  but it doesn't change the results and it is slightly faster. 
 #  
 # Taking the first elements of FTL and then computing G (changing M by N)
 # is faster than taking the first elements of G, but it does not provide
 # the same results
   
-  return(G)
+  invisible(return(list(G=G,L=L)))
+}
+
+.anisotropy.rotation <- function(theta=0,dzeta=1,inverse=TRUE) {
+  rotate <- matrix(c(cos(theta),-sin(theta),sin(theta),cos(theta)),2,2)
+  scale <- diag(c(1,1/dzeta))
+  Q.inv <- scale%*%rotate
+  if(inverse) return(Q.inv)
+  solve(Q.inv)
 }
 
 
-
-rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100, ny=100, nt=100,separable=TRUE,model="exponential",param=c(1,1,1,1,1,1),scale=c(1,1),var.grf=1,mean.grf=0,lmax=NULL,discrete.time=FALSE,exact=FALSE)
+rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100, ny=100, nt=100,separable=TRUE,model="exponential",param=c(1,1,1,1,1,1),scale=c(1,1),var.grf=1,mean.grf=0,lmax=NULL,discrete.time=FALSE,exact=FALSE,anisotropy=FALSE,ani.pars=NULL)
 {
   
   if (missing(s.region)) s.region <- matrix(c(0,0,1,1,0,1,1,0),ncol=2)
   if (missing(t.region)) t.region <- c(0,1)
+  if (anisotropy==TRUE & length(ani.pars) != 2) 
+    stop("Argument ani.pars must be a vector with 2 elements: the anisotropy angle and anisotropy ratio")
+  aniso = ifelse(anisotropy,1,0)
+
+  ###############
+  
+  stcov=.covst(x=seq(-1,1,length=nx),y=seq(-1,1,length=ny),times=seq(0,1,length=nt),separable=separable,model,param=param,sigma2=var.grf,scale=scale,plot=FALSE,nlevels=10,aniso=aniso,ani.pars=ani.pars)
+
+  
+  ###############
   
   t.region <- sort(t.region)
   s.area <- areapl(s.region)
   t.area <- t.region[2]-t.region[1]
   tau <- c(start=t.region[1],end=t.region[2],step=(t.region[2]-t.region[1])/(nt-1))
-  bpoly <- bbox(s.region)
+#  bpoly <- bbox(s.region)
 
   lambdamax <- lmax
   pattern <- list()
-  index.t <- list()
   Lambdafin <- list()
   ni <- 1
 
@@ -299,8 +325,10 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
 
   while(ni<=nsim)
     {
-      S <- .gauss3D(nx=nx,ny=ny,nt=nt,xlim=range(s.region[,1]),ylim=range(s.region[,2]),tlim=range(t.region),separable=separable,model=model,param=param,scale=scale,var.grf=var.grf,mean.grf=mean.grf,exact=exact)
-
+      S <- .gauss3D(nx=nx,ny=ny,nt=nt,xlim=range(s.region[,1]),ylim=range(s.region[,2]),tlim=range(t.region),separable=separable,model=model,param=param,scale=scale,var.grf=var.grf,mean.grf=mean.grf,exact=exact,aniso=aniso,ani.pars=ani.pars)
+      covar = S$L
+      S = S$G
+      
       Lambda <- exp(S)
 
       mut <- rep(0,nt)
@@ -321,135 +349,103 @@ rlgcp <- function(s.region, t.region, replace=TRUE, npoints=NULL, nsim=1, nx=100
   
       npts <- round(lambdamax/(s.area*t.area),0)
       if (npts==0) stop("there is no data to thin")
-  
-      if ((replace==FALSE) & (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
 
+      if ((replace==FALSE) & (nt < max(npts,npoints))) stop("when replace=FALSE, nt must be greater than the number of points used for thinning")
       if (discrete.time==TRUE)
         {
           vect <- seq(floor(t.region[1]),ceiling(t.region[2]),by=1)
           times.init <- sample(vect,nt,replace=replace)
+          t.grid$times = times.init
         }
-      else
-        times.init <- runif(nt,min=t.region[1],max=t.region[2])
+###      else
+###        times.init <- runif(nt,min=t.region[1],max=t.region[2])
+
+      XX=rep(s.grid$X,nt)
+      YY=rep(s.grid$Y,nt)
+      TT=rep(t.grid$times,length(s.grid$X))
       
-      samp <- sample(1:nt,npts,replace=replace,prob=mut/max(mut,na.rm=TRUE))
-      times <- times.init[samp]
+#      df=NULL
+#      for(nl in 1:nt)
+#      {
+#        lambdal=as.im(list(x=s.grid$x,y=s.grid$y,z=Lambda[,,nl]))
+#        df <- rbind(df,as.data.frame(lambdal))
+#      }
+      
+      df=NULL
+      for(nl in 1:nt)
+      {
+        LL = Lambda
+        LL[is.na(LL)] = -999
+        lambdal=as.im(list(x=s.grid$x,y=s.grid$y,z=LL[,,nl]))
+        df <- rbind(df,as.data.frame(lambdal))
+      }
+      df$value[df$value==-999]=0
+      
+      samp=sample.int(length(XX),npoints,replace=TRUE,prob=df$value)
+      xx <- XX[samp] + runif(npoints, -s.grid$xinc/2, s.grid$xinc/2)
+      yy <- YY[samp] + runif(npoints, -s.grid$yinc/2, s.grid$yinc/2)
+      
+      if (discrete.time==TRUE)
+      tt <- floor(TT[samp] + runif(npoints, -t.grid$tinc/2, t.grid$tinc/2))
+      else
+      tt <- TT[samp] + runif(npoints, -t.grid$tinc/2, t.grid$tinc/2)
+        
+        
+      xyt.init=cbind(x=xx,y=yy,t=tt)
 
       retain.eq.F <- FALSE
       while(retain.eq.F==FALSE)
-        {
-          xy <- matrix(csr(poly=s.region,npoints=npts),ncol=2)
-          x <- xy[,1]
-          y <- xy[,2]
+      {
+         pts <- inpip(pts=cbind(xyt.init[,1],xyt.init[,2]),poly=s.region)
+         xyt.init <- xyt.init[pts,]
+         
+         ptt <- xyt.init[,3]>=t.region[1] & xyt.init[,3]<=t.region[2]
+         xyt.init <- xyt.init[ptt,]
+         
+         npts = dim(xyt.init)[1]
+         if (npts == npoints) retain.eq.F <- TRUE
+         else
+         {
+           samp=sample.int(length(XX),npoints-npts,replace=TRUE,prob=df$value)
+           
+           xx <- XX[samp] + runif(npoints-npts, -s.grid$xinc/2, s.grid$xinc/2)
+           yy <- YY[samp] + runif(npoints-npts, -s.grid$yinc/2, s.grid$yinc/2)
+           
+           if (discrete.time==TRUE)
+             tt <- floor(TT[samp] + runif(npoints-npts, -t.grid$tinc/2, t.grid$tinc/2))
+           else
+             tt <- TT[samp] + runif(npoints-npts, -t.grid$tinc/2, t.grid$tinc/2)
+           
+           xyt.init1=cbind(x=xx,y=yy,t=tt)
+           xyt.init=rbind(xyt.init,xyt.init1)
+         }}
       
-          prob <- NULL
-          for(ix in 1:length(x))
-            {
-              nix <- findInterval(vec=s.grid$x,x=x[ix])
-              niy <- findInterval(vec=s.grid$y,x=y[ix])
-              nit <- findInterval(vec=t.grid$times,x=times[ix])
-		  if (nix==0 | niy==0 | nit==0) 
-			prob=c(prob,NA)
-		  else	
-                  prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
-            }
-          
-          M <- which(is.na(prob))
-          if (length(M)!=0)
-            {
-              x <- x[-M]
-              y <- y[-M]
-              times <- times[-M]
-              prob <- prob[-M]
-              npts <- length(x)
-            }
-          
-          u <- runif(npts)
-          retain <- u <= prob
-          if (sum(retain==FALSE)==length(retain)) retain.eq.F <- FALSE
-          else retain.eq.F <- TRUE
-        }
-      
-      x <- x[retain]
-      y <- y[retain]
-      samp <- samp[retain]
-      samp.remain <- (1:nt)[-samp]
-      times <- times[retain]
-      
-      neffec <- length(x)
-      if (neffec > npoints)
-        {
-          retain <- 1:npoints
-          x <- x[retain]
-          y <- y[retain]
-          samp <- samp[retain]
-          samp.remain <- (1:nt)[-samp]
-          times <- times[retain]
-        }
-      while(neffec < npoints)
-        {
-          xy <- as.matrix(csr(poly=s.region,npoints=npoints-neffec))
-          if (dim(xy)[2]==1) {wx <- xy[1]; wy <- xy[2]}
-          else {wx <- xy[,1]; wy <- xy[,2]}
-          
-          if (isTRUE(replace))
-            wsamp <- sample(1:nt,npoints-neffec,replace=replace,prob=mut/max(mut,na.rm=TRUE))
-          else
-            wsamp <- sample(samp.remain,npoints-neffec,replace=replace,prob=mut[samp.remain]/max(mut[samp.remain],na.rm=TRUE))
-          
-          wtimes <- times.init[wsamp]
-          prob <- NULL
-          for(ix in 1:length(wx))
-            {
-              nix <- findInterval(vec=s.grid$x,x=wx[ix])
-              niy <- findInterval(vec=s.grid$y,x=wy[ix])
-              nit <- findInterval(vec=t.grid$times,x=wtimes[ix])
-              if (nix==0 | niy==0 | nit==0) 
-			prob=c(prob,NA)
-		  else	
-                  prob <- c(prob,Lambda[nix,niy,nit]/lambdamax)
-            }
-          M <- which(is.na(prob))
-          if (length(M)!=0)
-            {
-              wx <- wx[-M]
-              wy <- wy[-M]
-              wtimes <- wtimes[-M]
-              prob <- prob[-M]
-            }
-          if (neffec > 0)
-            {
-              u <- runif(length(prob))
-              retain <- u <= prob
-              x <- c(x,wx[retain])
-              y <- c(y,wy[retain])
-              times <- c(times,wtimes[retain])
-              samp <- c(samp,wsamp[retain])
-              samp.remain <- (1:nt)[-samp]
-              neffec <- length(x)
-            }
-        }
-      
-      times <- sort(times)
-      index.times <- sort(samp)
-      pattern.interm <- cbind(x=x,y=y,t=times)
+
+      index.times <- sort(xyt.init[,3],index.return=TRUE)$ix
+    
+#      if (anisotropy)
+#      {
+#      Q=.anisotropy.rotation(theta=ani.pars[1],dzeta=ani.pars[2],inverse=FALSE)
+#      resani=Q%*%rbind(x,y)
+#      x=resani[1,]
+#      y=resani[2,]
+#      }
+      pattern.interm <- xyt.init[index.times,]
 
       if (nsim==1)
         {
           pattern <- as.3dpoints(pattern.interm)
-          index.t <- index.times
           Lambdafin <- Lambda
         }
       else
         {
           pattern[[ni]] <- as.3dpoints(pattern.interm)
-          index.t[[ni]] <- index.times
           Lambdafin[[ni]] <- Lambda
         }
       ni <- ni+1
     }
 
-  invisible(return(list(xyt=pattern,s.region=s.region,t.region=t.region,Lambda=Lambdafin,index.t=index.t)))
+  invisible(return(list(xyt=pattern,s.region=s.region,t.region=t.region,Lambda=Lambdafin,aniso=list(anisotropy=anisotropy,ani=ani.pars),stcov=stcov,covar=covar,grid=list(s.grid,t.grid))))
 }
 
 
