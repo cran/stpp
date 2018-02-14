@@ -1,5 +1,4 @@
-6f423944cf57ccd040d903049cd60c85 *CHANGES
-bfdecaddbb61c2841816bffea83b8928 *DESCRIPTION
+917d6b25efc4b8d913788d96c93d84e4 *DESCRIPTION
 f345822bcb3666389186dbe0cfc685da *NAMESPACE
 878d45f84b86552f838ab61f1ea79d72 *R/ASTIKhat.R
 3fb274af806243f316ff516ffea044d8 *R/LISTAhat.R
@@ -20,11 +19,11 @@ d33342021379f56452f5b2d6bc9e78e6 *R/rlgcp.R
 2331863ded1c6c1a3d486775ed7ea423 *R/stan.R
 44256f66abbe1e947cc214cf8a965d5b *R/stdcpp.R
 9259818d2bba59f32ac6308847c2dce7 *R/sthpcpp.R
-b0c59a0e27bda03d222c5dcbafddf286 *build/vignette.rds
+2bacca28da43d754001bb206c72bd0c4 *build/vignette.rds
 2cc7d6bf9f9ecc8ee90969e246c775e5 *data/fmd.R
 4d532d9ce171e0ebc0e7ae33f649dd8b *data/northcumbria.R
 5c52543a1b23621444bc0e5b14271f1c *inst/doc/docs.Rmd
-fda91f44440b70b3daa18f22cff78f64 *inst/doc/docs.html
+62069d94ff00d23c5cfed253bd88409e *inst/doc/docs.html
 c1378f499ba75faaae1e0efef5124d16 *inst/doc/stpp.pdf
 a497ba7a36c051a92e3490b597f45485 *man/ASTIKhat.Rd
 5b2aeaf1c2351992c930716b72c71a9a *man/LISTAhat.Rd
@@ -49,7 +48,7 @@ cdc19175e525b7a3741ae647fd58c346 *man/stan.Rd
 de56381e731ed9aecadaccfbe0f2381a *man/sthpcpp.Rd
 2b7b073750849004a56eb18f98ad2f34 *man/stpp-package.Rd
 118833de29522f1746156b6717ab7e69 *src/astk.f
-df666e9828107360d86d7a7e2f2ef1c4 *src/circ.f
+7976872e9d648344b8958f08faf57477 *src/circ.f
 805c29d79f6d53f008663587c1055ff7 *src/covst.f
 1112513f75bb7cab40defc265f6954e9 *src/init.c
 b09b18d00a172c26e951441d0f7a7a47 *src/listafunction.f

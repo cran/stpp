@@ -1,7 +1,7 @@
 Package: stpp
-Version: 2.0-2
+Version: 2.0-3
 Title: Space-Time Point Pattern Simulation, Visualisation and Analysis
-Date: 2017-12-12
+Date: 2018-01-14
 Authors@R: c(person("Edith", "Gabriel", role=c("aut","cre"),email="edith.gabriel@univ-avignon.fr"),
              person("Peter J","Diggle",role="aut",email="p.diggle@lancaster.ac.uk"),
              person("Barry","Rowlingson",role="aut",email="b.rowlingson@lancaster.ac.uk"),
@@ -18,10 +18,10 @@ RoxygenNote: 6.0.1
 BuildVignettes: True
 VignetteBuilder: knitr
 BugReports: https://github.com/stpp-GitHub-community
-Packaged: 2017-12-12 13:13:15 UTC; frajaroco
+Packaged: 2018-02-14 01:43:24 UTC; frajaroco
 Author: Edith Gabriel [aut, cre],
   Peter J Diggle [aut],
   Barry Rowlingson [aut],
   Francisco J Rodriguez-Cortes [aut]
 Repository: CRAN
-Date/Publication: 2017-12-12 13:23:53 UTC
+Date/Publication: 2018-02-14 19:02:33 UTC
