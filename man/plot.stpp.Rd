@@ -29,7 +29,7 @@ mark=NULL , mark.cexmin=0.4, mark.cexmax=1.2, mark.col=1, ...)}
 
 \seealso{\code{\link{as.3dpoints}} for creating data in spatio-temporal point format.}
 
-\author{Edith Gabriel <edith.gabriel@univ-avignon.fr> and Francisco J. Rodriguez-Cortes.}
+\author{Edith Gabriel <edith.gabriel@inrae.fr> and Francisco J. Rodriguez-Cortes.}
 
 \references{
 Gabriel E., Rowlingson B., Diggle P. (2013). stpp: an R package for plotting, simulating and analyzing Spatio-Temporal Point Patterns. Journal of Statistical Software, 53(2), 1--29.
