@@ -1,4 +1,4 @@
-gsp <- function(xyt,s.region,s.lambda,ds,ks="epanech",hs,correction="none",approach="simplified"){
+kmr <- function(xyt,s.region,s.lambda,ds,ks="epanech",hs,correction="none",approach="simplified"){
   
   verifyclass(xyt,"stpp")
   
@@ -50,19 +50,19 @@ gsp <- function(xyt,s.region,s.lambda,ds,ks="epanech",hs,correction="none",appro
   dx <- xp[nxt] - xp
   ym <- (yp + yp[nxt])/2
   Areaxy <- -sum(dx * ym)
-
+  
   if (Areaxy > 0){
     bsw <- owin(poly = list(x = s.region[,1], y = s.region[,2]))
-    }else{
+  }else{
     bsw <- owin(poly = list(x = s.region[,1][length(s.region[,1]):1], y = s.region[,2][length(s.region[,1]):1]))
-    }
+  }
   
   area <- area(bsw)
   pert <- perimeter(bsw)
   
   ok <- inside.owin(xyt[,1],xyt[,2],w=bsw)
   xyt.inside <- data.frame(x=xyt[,1][ok],y=xyt[,2][ok],t=xyt[,3][ok])
-
+  
   ptsx <- xyt.inside[,1]
   ptsy <- xyt.inside[,2]
   ptst <- xyt.inside[,3]
@@ -70,9 +70,9 @@ gsp <- function(xyt,s.region,s.lambda,ds,ks="epanech",hs,correction="none",appro
   pxy <- ppp(x=ptsx,y=ptsy,window=bsw)  
   
   if (missing(hs)){
-      hs <- bw.stoyan(pxy)
+    hs <- bw.stoyan(pxy)
   }
-
+  
   if (missing(ds)){
     rect <- as.rectangle(bsw)
     maxd <- min(diff(rect$xrange),diff(rect$yrange))/4
@@ -81,33 +81,24 @@ gsp <- function(xyt,s.region,s.lambda,ds,ks="epanech",hs,correction="none",appro
   }
   if(ds[1]==0){ds <- ds[-1]
   }
-  bsupt <- max(ptst)
-  binft <- min(ptst)
   
   kernel <- c(ks=ks,hs=hs)
-  gsptheo <- ((bsupt-binft)^2)/12
+  kmrtheo <- 1
   npt <- pxy$n[1]
   nds <- length(ds)
-  gsps <- rep(0,nds)
+  mumr <- mean(ptst)
+  ekmr <- rep(0,nds)
   
-  storage.mode(gsps) <- "double"
+  storage.mode(ekmr) <- "double"
   
   if (appro2[1]==1){
-    gspout <- .Fortran("gspcore",as.double(ptsx),as.double(ptsy),as.double(ptst),
-                       as.integer(npt),as.double(ds),as.integer(nds),as.integer(ker2),
-                       as.double(hs),(gsps))
+    kmrout <- .Fortran("kmrcore",as.double(ptsx),as.double(ptsy),as.double(ptst),
+                       as.integer(npt),as.double(ds),as.integer(nds),as.integer(ker2)
+                       ,as.double(hs),(ekmr))
     
-    gsps <- gspout[[9]]
+    ekmr <- kmrout[[9]]/mumr
     
-    dsf <- rep(0,nds+2)
-    dsf[3:(nds+2)] <- ds
-    ds <- dsf 
-    
-    egsp <- rep(0,nds+2)
-    egsp[2] <- gsps[1]
-    egsp[3:(nds+2)] <- gsps
-    
-    invisible(return(list(egsp=egsp,ds=ds,kernel=kernel,gsptheo=gsptheo)))
+    invisible(return(list(ekmr=ekmr,ds=ds,kernel=kernel,kmrtheo=kmrtheo)))
   } else {
     
     if(missing(s.lambda)){
@@ -141,14 +132,14 @@ gsp <- function(xyt,s.region,s.lambda,ds,ks="epanech",hs,correction="none",appro
     #  correction=="border" or "modified border"
     if(any(correction=="border")|any(correction=="modified.border")){
       bi <- bdist.points(pxy)
-      for(i in 1:nds){ 
+      for(i in 1:nds) { 
         wbi[,i] <- (bi>ds[i])/sum((bi>ds[i])/s.lambda)
         wbimod[,i] <- (bi>ds[i])/eroded.areas(bsw,ds[i])
       }
       wbi[is.na(wbi)] <- 0
       wbimod[is.na(wbimod)] <- 0
     }
-
+    
     # correction="setcovf"
     if(correction=="setcovf"){
       for (i in 1:nds){
@@ -157,24 +148,16 @@ gsp <- function(xyt,s.region,s.lambda,ds,ks="epanech",hs,correction="none",appro
       wss <- 1/wss
     }
     
-   options(warn = 0)
+    options(warn = 0)
     
-    gspout <- .Fortran("gspcoreinh",as.double(ptsx),as.double(ptsy),as.double(ptst),
-                        as.integer(npt),as.double(ds),as.integer(nds),as.double(s.lambda),
-                        as.integer(ker2),as.double(hs),as.double(wrs),as.double(wts),
-                        as.double(wbi),as.double(wbimod),as.double(wss),as.integer(correc2),
-                        (gsps))
-   
-     gsps <- gspout[[16]]
+    kmrout <- .Fortran("kmrcoreinh",as.double(ptsx),as.double(ptsy),as.double(ptst),
+                       as.integer(npt),as.double(ds),as.integer(nds),as.double(s.lambda),
+                       as.integer(ker2),as.double(hs),as.double(wrs),as.double(wts),
+                       as.double(wbi),as.double(wbimod),as.double(wss),as.integer(correc2),
+                       (ekmr))
     
-    dsf <- rep(0,nds+2)
-    dsf[3:(nds+2)] <- ds
-    ds <- dsf 
+    ekmr <- kmrout[[16]]/mumr
     
-    egsp <- rep(0,nds+2)
-    egsp[2] <- gsps[1]
-    egsp[3:(nds+2)] <- gsps
-    
-    invisible(return(list(egsp=egsp,ds=ds,kernel=kernel,gsptheo=gsptheo)))
+    invisible(return(list(ekmr=ekmr,ds=ds,kernel=kernel,kmrtheo=kmrtheo,s.lambda=s.lambda)))
   }
 }

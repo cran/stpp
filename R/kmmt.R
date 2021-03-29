@@ -1,4 +1,4 @@
-gte <- function(xyt,t.region,t.lambda,dt,kt="epanech",ht,correction="none",approach="simplified"){
+kmmt <- function(xyt,t.region,t.lambda,dt,kt="epanech",ht,correction="none",approach="simplified"){
   
   verifyclass(xyt,"stpp")
   
@@ -45,7 +45,7 @@ gte <- function(xyt,t.region,t.lambda,dt,kt="epanech",ht,correction="none",appro
   }
   
   xyt.inside <- .intim(xyt,t.region)
-
+  
   if (missing(ht)){
     d <- dist(xyt.inside[,3])
     ht <- dpik(d,kernel=kt,range.x=c(min(d),max(d)))
@@ -53,9 +53,6 @@ gte <- function(xyt,t.region,t.lambda,dt,kt="epanech",ht,correction="none",appro
   
   bsupt <- max(t.region)
   binft <- min(t.region)
-  W <- sbox(xyt.inside[,1:2], xfrac=0.01, yfrac=0.01)
-  a <- diff(range(W[,1]))
-  b <- diff(range(W[,2]))
   
   if (missing(dt)) {
     maxt <- (bsupt-binft)/4
@@ -66,7 +63,7 @@ gte <- function(xyt,t.region,t.lambda,dt,kt="epanech",ht,correction="none",appro
   }
   
   kernel <- c(kt=kt,ht=ht)
-  gtetheo <- ((a^2)+(b^2))/12
+  kmmttheo <- 1
   
   pts <- xyt.inside[,1:2]
   xytimes <- xyt.inside[,3]
@@ -75,24 +72,19 @@ gte <- function(xyt,t.region,t.lambda,dt,kt="epanech",ht,correction="none",appro
   ptst <- xytimes
   npt <- length(ptsx)
   ndt <- length(dt)
-  gtet <- rep(0,ndt)
+  snorm <- apply(pts,MARGIN=1,FUN=norm,type="2")
+  mummt <- mean(snorm)
+  ekmmt <- rep(0,ndt)
   
-  storage.mode(gtet) <- "double"
+  storage.mode(ekmmt) <- "double"
   
   if (appro2[1]==1){
-    gteout <- .Fortran("gtecore",as.double(ptsx),as.double(ptsy),as.double(ptst),as.integer(npt),as.double(dt),
-                        as.integer(ndt),as.integer(ker2),as.double(ht),(gtet))
-    gtet <- gteout[[9]]
+    kmmtout <- .Fortran("kmmtcore",as.double(snorm),as.double(ptst),as.integer(npt),as.double(dt),
+                        as.integer(ndt),as.integer(ker2),as.double(ht),(ekmmt))
     
-    dtf <- rep(0,ndt+2)
-    dtf[3:(ndt+2)] <- dt
-    dt <- dtf 
+    ekmmt <- kmmtout[[8]]/(mummt^2)
     
-    egte <- rep(0,ndt+2)
-    egte[2] <- gtet[1]
-    egte[3:(ndt+2)] <- gtet
-    
-    invisible(return(list(egte=egte,dt=dt,kernel=kernel,gtetheo=gtetheo)))
+    invisible(return(list(ekmmt=ekmmt,dt=dt,kernel=kernel,kmmttheo=kmmttheo)))
   } else {
     
     if(missing(t.lambda)){
@@ -140,22 +132,14 @@ gte <- function(xyt,t.region,t.lambda,dt,kt="epanech",ht,correction="none",appro
       wst <- 1/wsett
     }
     
-    gteout <- .Fortran("gtecoreinh",as.double(ptsx),as.double(ptsy),as.double(ptst),as.integer(npt),
+    kmmtout <- .Fortran("kmmtcoreinh",as.double(snorm),as.double(ptst),as.integer(npt),
                         as.double(dt),as.integer(ndt),as.double(t.lambda),as.integer(ker2),
                         as.double(ht),as.double(wrt),as.double(wtt),as.double(wbit),
-                        as.double(wbimodt),as.double(wst),as.integer(correc2),(gtet))
+                        as.double(wbimodt),as.double(wst),as.integer(correc2),(ekmmt))
     
-    gtet <- gteout[[16]]
+    ekmmt <- kmmtout[[15]]/(mummt^2)
     
-    dtf <- rep(0,ndt+2)
-    dtf[3:(ndt+2)] <- dt
-    dt <- dtf 
-    
-    egte <- rep(0,ndt+2)
-    egte[2] <- gtet[1]
-    egte[3:(ndt+2)] <- gtet
-    
-    invisible(return(list(egte=egte,dt=dt,kernel=kernel,gtetheo=gtetheo)))
+    invisible(return(list(ekmmt=ekmmt,dt=dt,kernel=kernel,kmmttheo=kmmttheo,t.lambda=t.lambda)))
   }
 }
 
@@ -221,4 +205,10 @@ tsetcovf <- function(times,ntimes,longit){
     bj <- c(bj,min(c(abs(times[j]-a),abs(times[j]-b))))
   
   invisible(return(bj))
+}
+
+.eroded.areat=function(t.region,dist){
+  a <- diff(range(t.region))
+  b <- a-dist
+  invisible(return(b))
 }
