@@ -19,7 +19,8 @@ Ubuntu users can follow the instructions in this discussion on stackoverflow to 
 
 ## References
 
-- [Gabriel E., Rowlingson B., Diggle P. (2013). stpp: an R package for plotting, simulating and analyzing Spatio-Temporal Point Patterns. *Journal of Statistical Software*, **53**(2), 1-29.](https://www.jstatsoft.org/article/view/v053i02/v53i02.pdf)
+- [Gabriel E., Rowlingson B., Diggle P. (2013). stpp: an R package for plotting, simulating and analyzing Spatio-Temporal Point Patterns. *Journal of Statistical Software*, **53**(2), 1-29.](https://www.jstatsoft.org/htaccess.php?volume=053&type=i&issue=02&filename=paper)
+- [González, J. A., Rodríguez-Cortés, F. J., Cronie, O. and Mateu, J. (2016). Spatio-temporal point process statistics: a review. *Spatial Statiscts*, **18**:505-544.](https://www.sciencedirect.com/science/article/pii/S2211675316301130)
 
 ## CiteBibtex
 
@@ -35,9 +36,9 @@ A BibTeX entry for LaTeX users is
 ```
 ### Autors:
 
-[Edith Gabriel, Avignon University, Avignon, France](https://informatique-mia.inrae.fr/biosp/homepage-edith-gabriel/)
+[Edith Gabriel, Avignon University, Avignon, France](https://biosp.mathnum.inrae.fr/homepage-edith-gabriel/)
 
-[Peter J. Diggle, Lancaster University, Lancaster, UK](http://www.lancaster.ac.uk/staff/diggle/)
+[Peter J. Diggle, Lancaster University, Lancaster, UK](https://www.lancaster.ac.uk/staff/diggle/)
 
 [Barry Rowlingson, Lancaster University, Lancaster, UK](http://barry.rowlingson.com/)
 
