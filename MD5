@@ -1,6 +1,6 @@
-3544c20a1b9dc2b9cab5ada2901de4b4 *CHANGES
-94ccf82627858054bf27c44ca68e467e *DESCRIPTION
-7954d1de323562ea124db3d51617855a *NAMESPACE
+92956dcb75e0d96081f9141f0e7bbf56 *CHANGES
+87de05841f6c483920340ca863613141 *DESCRIPTION
+1a87fb262698e441448180a52b52a2cc *NAMESPACE
 8984702e5ebbda91c34788a2002d3489 *R/ASTIKhat.R
 c4ada538ed0f2a3ed3785fb209895324 *R/KLISTAhat.R
 d71fa23f23a27def620f6e8f8c634e83 *R/LISTAhat.R
@@ -11,7 +11,7 @@ b101f394ca9bdfe153b11fbb7acc81b5 *R/PCFhat.R
 f27bd1b5dc1c4a09a155ae8a291f1c07 *R/gsp.R
 f97b14716314a9c9bbb3f3753156037f *R/gte.R
 57ca06e899a009e0d28f1ca300b12849 *R/is.3dpoints.R
-26ab622e7303c3a60f91c39b8ef9156b *R/kmmr.R
+34c103f769a38d007490e969d62f8e7d *R/kmmr.R
 ba2555320efcad9f97bc8e0dc775a154 *R/kmmt.R
 3f290e7b850abc21d0a3225646439f9a *R/kmr.R
 4754659d6268ee5bfbbf0491e6d12ce3 *R/kmt.R
@@ -27,12 +27,11 @@ b16363917ba159a3ad7f6c51ea6787a6 *R/rpcp.R
 2331863ded1c6c1a3d486775ed7ea423 *R/stan.R
 44256f66abbe1e947cc214cf8a965d5b *R/stdcpp.R
 b3179e871190011832aea580bd2d6472 *R/sthpcpp.R
-0af6f9f9f70f4ea4e7d58ea7ca1cf60c *README.md
-c0157aeaece6cd20d37cf4df28357b54 *build/vignette.rds
-0cc98548db46eac084b623660a4416f0 *data/fmd.rda
-048e5d79ba4e0df18438dfdbfb5c0d1a *data/northcumbria.rda
-4b62cd63a8b3ec6f390baaee16dbc5bd *inst/doc/docs.Rmd
-85b6906d03a07b884554498038d5a351 *inst/doc/docs.html
+94ca749857f1b9e01957cac8eca621e2 *build/vignette.rds
+36365eee84df24c82514cef55f528230 *data/fmd.rda
+b23602544c6a96a6a6f429300832c1d3 *data/northcumbria.rda
+0a21e0561fd30a886030ddc3786f5297 *inst/doc/docs.Rmd
+5f532e40204ce63098f149713caaa5a8 *inst/doc/docs.html
 134fc0a66423eb55b5d7218b5e85d5aa *man/ASTIKhat.Rd
 65058fd7bbc9ca0f0796d81ba790ec59 *man/KLISTAhat.Rd
 6fd8b67bc8e0bd75bc7d630298521064 *man/LISTAhat.Rd
@@ -71,7 +70,7 @@ beb05a54bcf0b421ff9dab3bca5617e7 *src/gtecore.f
 c2c3fdc451bfba69983e1aefc72f31f5 *src/gtecoreinh.f
 c170d78c4ad2b459e0801ae0a2bca079 *src/init.c
 ddb108373a211b5192574df85c42f17d *src/klistafunction.f
-c65baf8639ad11c7f363831892e22368 *src/kmmrcore.f
+243747e75d8b93f9db4fbbfe89ca1c7a *src/kmmrcore.f
 9648a60ea1907b0218d7005391390dc4 *src/kmmrcoreinh.f
 10aa88ef1d38f2c4f722d35b73c646ae *src/kmmtcore.f
 81c7bd27a82bcb11ccbf145b597f3669 *src/kmmtcoreinh.f
@@ -82,4 +81,4 @@ f0aec40ffdfd6be7037bf541c5e93ad8 *src/kmrcore.f
 b09b18d00a172c26e951441d0f7a7a47 *src/listafunction.f
 04ee26f7ef87a29b03a7a20a802c7423 *src/pcffunction.f
 fc387401adb7bff62fb73d74ffc35a92 *src/stikfunction.f
-4b62cd63a8b3ec6f390baaee16dbc5bd *vignettes/docs.Rmd
+0a21e0561fd30a886030ddc3786f5297 *vignettes/docs.Rmd
